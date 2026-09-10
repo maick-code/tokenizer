@@ -63,9 +63,43 @@ tokenizer/
 /content/reports/baseline_bpe_10k.md
 ```
 
-6. Les télécharger (`Fichiers` dans Colab, clic droit → `Télécharger`), puis, pour les
-   conserver dans le dépôt, les placer dans `models/baseline_bpe_10k/` et `reports/`
-   et les commiter (le `.gitignore` ne les exclut pas volontairement).
+### ⚠️ Pourquoi les rapports n'apparaissent pas sur GitHub ?
+
+Parce que **Colab ne pousse jamais rien sur GitHub tout seul**. Colab exécute le code sur une
+machine temporaire ; quand on ouvre un notebook depuis GitHub, le dépôt n'est **pas** cloné
+(seul le notebook est copié en mémoire). Les fichiers générés existent donc uniquement dans la
+VM Colab : `/content/models/...` et `/content/reports/...`, jusqu'à l'extinction de la VM.
+
+La section **18** du notebook (`Récupérer les artefacts`) automatise tout. Trois méthodes :
+
+**Méthode 1 — sans token (la plus simple)**
+1. Exécuter la cellule de la section 18 → elle crée `baseline_bpe_10k_artifacts.zip`.
+2. Panneau `Fichiers` de Colab → clic droit sur le zip → `Télécharger`.
+3. Le dézipper, puis déposer :
+   - `tokenizer.json` → `models/baseline_bpe_10k/tokenizer.json`
+   - `baseline_bpe_10k.json` et `baseline_bpe_10k.md` → `reports/`
+   soit via l'interface GitHub (*Add file* → *Upload files*), soit en local avec `git`.
+
+**Méthode 2 — cloner le dépôt dans Colab puis committer/pousser**
+```python
+!git clone https://github.com/maick-code/tokenizer.git /content/tokenizer
+# ... exécuter le notebook, puis la cellule de la section 18 (elle copie les artefacts
+#     dans le clone et affiche les commandes git) ...
+!git -C /content/tokenizer add models reports
+!git -C /content/tokenizer commit -m "Baseline BPE 10K: tokenizer.json + reports (Colab run)"
+!git -C /content/tokenizer push origin main
+```
+Pour le `push`, Colab demandera une authentification : utiliser un **Personal Access Token**
+GitHub que **vous** créez (Settings → Developer settings → Tokens, portée `repo`) et que vous
+stockez dans *Colab ▸ Secrets* sous le nom `GITHUB_TOKEN` — la section 18 le détecte et pousse
+automatiquement. **Ne partagez jamais ce token et ne le collez jamais dans un chat.**
+
+**Méthode 3 — persister sur Google Drive** (recommandé avant de fermer Colab) : décommenter
+l'option Drive de la section 18 pour copier les artefacts dans
+`/content/drive/MyDrive/tokenizer_artifacts/`.
+
+> Le `.gitignore` n'exclut volontairement **pas** `models/` et `reports/` : ils doivent pouvoir
+> être commités. Seuls les caches (`.cache/huggingface/`, `__pycache__/`, etc.) sont ignorés.
 
 ## Configuration de la baseline (figée — ne pas modifier pour cette expérience)
 
