@@ -29,6 +29,10 @@ fournir le token autrement (secret exporté dans l'environnement, ou --token-fil
 Colab, en incluant le dossier de soumission :
     !python scripts/push_artifacts_to_github.py --source /content --include-submissions
 
+Supprimer au passage un dossier de soumission obsolète (ancien slug) :
+    python scripts/push_artifacts_to_github.py --source /content --include-submissions \\
+        --prune-submissions
+
 Local :
     python scripts/push_artifacts_to_github.py --repo . --source .
 
@@ -223,6 +227,54 @@ def git_or_die(repo: Path | str | None, token: str | None, *args: str,
 # --------------------------------------------------------------------------- #
 # Artefacts
 # --------------------------------------------------------------------------- #
+def best_model_tokenizer(source: Path) -> Path | None:
+    """Chemin du tokenizer de la meilleure configuration du dernier balayage."""
+    import json
+
+    sweep = source / "reports" / "optimization_sweep.json"
+    if not sweep.is_file():
+        return None
+    try:
+        name = json.loads(sweep.read_text(encoding="utf-8"))["best"]["name"]
+    except Exception:
+        return None
+    candidate = source / "models" / f"optimized_{name}" / "tokenizer.json"
+    return candidate if candidate.is_file() else None
+
+
+def prune_obsolete_submissions(source: Path) -> list[str]:
+    """Supprime les dossiers submissions/<slug>/ obsolètes (tokenizer != meilleur modèle).
+
+    Cas typique : après avoir renommé le SLUG, l'ancien dossier reste sur le disque et serait
+    publié avec le nouveau — or le checker officiel exige exactement un répertoire de
+    soumission. Seuls des dossiers dont le tokenizer.json diffère du meilleur modèle sont
+    supprimés, et seulement s'il en reste plusieurs : le dossier courant est toujours conservé.
+    """
+    import hashlib
+
+    subs = source / "submissions"
+    if not subs.is_dir():
+        return []
+    dirs = sorted(p for p in subs.iterdir() if p.is_dir() and (p / "tokenizer.json").is_file())
+    if len(dirs) < 2:
+        return []
+    best = best_model_tokenizer(source)
+    digest = (lambda p: hashlib.sha256(p.read_bytes()).hexdigest())
+    if best is not None and any(digest(d / "tokenizer.json") == digest(best) for d in dirs):
+        keep = [d for d in dirs if digest(d / "tokenizer.json") == digest(best)]
+    else:
+        keep = [max(dirs, key=lambda d: d.stat().st_mtime)]
+    removed = []
+    for d in dirs:
+        if d not in keep:
+            shutil.rmtree(d)
+            removed.append(d.name)
+    if removed:
+        log(f"dossiers de soumission obsolètes supprimés : {', '.join(removed)}")
+        log(f"dossier conservé : {keep[0].name}")
+    return removed
+
+
 def collect_artifacts(source: Path, include_submissions: bool) -> list[str]:
     """Chemins relatifs (posix) des fichiers à publier, triés."""
     roots = list(ARTIFACT_DIRS) + (["submissions"] if include_submissions else [])
@@ -325,6 +377,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
                         help="ne jamais demander le token de façon interactive")
     parser.add_argument("--no-push", action="store_true",
                         help="copier et commiter sans pousser")
+    parser.add_argument("--prune-submissions", action="store_true",
+                        help="supprimer les dossiers de soumission obsolètes (ancien slug) "
+                             "avant publication : un seul slug est autorisé par PR")
     parser.add_argument("--include-submissions", action="store_true",
                         help="publier aussi submissions/**")
     parser.add_argument("--zip", action="store_true",
@@ -350,6 +405,9 @@ def main(argv: list[str] | None = None) -> int:
     log(f"Branche     : {branch}")
     log(f"Artefacts   : {', '.join(ARTIFACT_DIRS + (('submissions',) if args.include_submissions else ()))}")
     log()
+
+    if args.prune_submissions:
+        prune_obsolete_submissions(source)
 
     files = collect_artifacts(source, args.include_submissions)
     if not files:
