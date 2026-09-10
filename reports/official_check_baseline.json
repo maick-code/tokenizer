@@ -49,5 +49,23 @@
   "environment": {
     "tokenizers": "0.22.1",
     "python": "3.11.2"
+  },
+  "metric_equivalence_test": {
+    "purpose": "Differential test: the metric implemented in notebooks/02_optimization_sweep.ipynb vs the official competition code (competition/metrics.py), on the same inputs.",
+    "inputs": "18 hand-picked texts across the 6 languages (including CJK, kana, hangul, Arabic presentation forms, Syriac, Cyrillic, Hebrew, Tamil, Bengali, emoji, rare Latin) encoded with the committed baseline tokenizer.json",
+    "result": "bit-for-bit identical",
+    "fields_compared": [
+      "score",
+      "fertility",
+      "unknown_rate",
+      "penalised",
+      "token_counts",
+      "word_counts",
+      "guardrail breaches",
+      "unknown_tokens"
+    ],
+    "checked_at_utc": "2026-09-10T01:02:45Z",
+    "official_score_on_sample": 54.408088235294116,
+    "local_score_on_sample": 54.408088235294116
   }
 }
