@@ -275,6 +275,18 @@ def safety_checks(source: Path, files: list[str], force: bool) -> list[str]:
     if not any(f.startswith("models/") and f.endswith("tokenizer.json") for f in files):
         problems.append("aucun models/**/tokenizer.json trouvé dans les artefacts")
 
+    # Une soumission = UN dossier. Un dossier obsolète laissé par une exécution antérieure
+    # (ancien slug, par exemple après avoir renommé SLUG) rendrait la PR invalide : le
+    # checker officiel exige exactement un répertoire `submissions/<slug>/`.
+    subs = source / "submissions"
+    if subs.is_dir():
+        slugs = sorted(p.name for p in subs.iterdir()
+                       if p.is_dir() and (p / "tokenizer.json").is_file())
+        if len(slugs) > 1:
+            problems.append(
+                f"plusieurs dossiers de soumission dans submissions/ : {', '.join(slugs)} "
+                "(un seul slug est autorisé par PR ; supprimez les dossiers obsolètes)")
+
     if problems and not force:
         log("\n" + "!" * 74)
         log("PUBLICATION REFUSÉE — les artefacts semblent ne pas venir d'un run réel :")
