@@ -80,19 +80,27 @@ La section **18** du notebook (`Récupérer les artefacts`) automatise tout. Tro
    - `baseline_bpe_10k.json` et `baseline_bpe_10k.md` → `reports/`
    soit via l'interface GitHub (*Add file* → *Upload files*), soit en local avec `git`.
 
-**Méthode 2 — cloner le dépôt dans Colab puis committer/pousser**
-```python
-!git clone https://github.com/maick-code/tokenizer.git /content/tokenizer
-# ... exécuter le notebook, puis la cellule de la section 18 (elle copie les artefacts
-#     dans le clone et affiche les commandes git) ...
-!git -C /content/tokenizer add models reports
-!git -C /content/tokenizer commit -m "Baseline BPE 10K: tokenizer.json + reports (Colab run)"
-!git -C /content/tokenizer push origin main
-```
-Pour le `push`, Colab demandera une authentification : utiliser un **Personal Access Token**
-GitHub que **vous** créez (Settings → Developer settings → Tokens, portée `repo`) et que vous
-stockez dans *Colab ▸ Secrets* sous le nom `GITHUB_TOKEN` — la section 18 le détecte et pousse
-automatiquement. **Ne partagez jamais ce token et ne le collez jamais dans un chat.**
+**Méthode 2 — token GitHub : tout automatique (deep-dive)**
+
+1. **Créer le token** : GitHub → *Settings* → *Developer settings* → *Personal access tokens* →
+   *Tokens (classic)* → **Generate new token (classic)** → cocher la portée **`repo`** →
+   générer et **copier** le token (il ne sera plus affiché).
+2. **L'enregistrer dans Colab** : icône **clé 🔑** dans la barre latérale gauche → **Add new secret** :
+   - *Name* : `GITHUB_TOKEN`
+   - *Value* : le token
+   - activer **Notebook access** (interrupteur).
+3. **Exécuter le notebook** (`Runtime ▸ Run all`) puis la **section 18** : elle détecte le secret,
+   clone `https://github.com/maick-code/tokenizer.git`, copie les artefacts, commite et **pousse**.
+   Régler la branche cible en haut de la cellule : `BRANCH = "main"` (ou `"arena/01a0889d-tokenizer"`).
+4. Alternative en une commande (Colab, après le run du notebook) :
+   ```python
+   !wget -q https://raw.githubusercontent.com/maick-code/tokenizer/main/scripts/push_artifacts_to_github.py
+   !python push_artifacts_to_github.py --source /content --branch main --zip
+   ```
+
+Le token n'est **jamais** écrit dans le dépôt, jamais affiché (les sorties sont masquées via `***`)
+et ne doit **jamais** être partagé dans un chat. S'il fuit : le révoquer immédiatement
+(*Settings → Developer settings → Tokens → Delete*).
 
 **Méthode 3 — persister sur Google Drive** (recommandé avant de fermer Colab) : décommenter
 l'option Drive de la section 18 pour copier les artefacts dans
