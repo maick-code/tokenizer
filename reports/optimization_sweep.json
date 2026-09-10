@@ -37,6 +37,74 @@
   "baseline_reference_score": 2.059977,
   "results": [
     {
+      "name": "c9-bytefallback",
+      "note": "EXP-004 : c8 + byte_fallback (256 tokens <0xXX>) -> supprime les [UNK]",
+      "config": {
+        "name": "c9-bytefallback",
+        "model": "bpe",
+        "pre": "whitespace_split",
+        "min_freq": 5,
+        "alphabet": true,
+        "boost": {
+          "ha": 2,
+          "sw": 2,
+          "yo": 2,
+          "am": 2
+        },
+        "byte_fallback": true,
+        "note": "EXP-004 : c8 + byte_fallback (256 tokens <0xXX>) -> supprime les [UNK]"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 28.240275859832764,
+      "score": 1.936819954499466,
+      "fertility": {
+        "en": 1.9599407702132952,
+        "fr": 2.0367338834223183,
+        "ha": 1.6657500083501264,
+        "sw": 1.8600211937220759,
+        "yo": 1.840399729471303,
+        "am": 2.381108886454359
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.9599407702132952,
+        "fr": 2.0367338834223183,
+        "ha": 1.6657500083501264,
+        "sw": 1.8600211937220759,
+        "yo": 1.840399729471303,
+        "am": 2.381108886454359
+      },
+      "tokens": {
+        "en": 173394,
+        "fr": 184634,
+        "ha": 149616,
+        "sw": 129889,
+        "yo": 157829,
+        "am": 189091
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 23985,
+      "raw_scored": 1.936819954499466,
+      "guardrail_budget": 2.227342947674386,
+      "guardrail_breaches": [],
+      "guardrail_pass": true
+    },
+    {
       "name": "c8-scoredboost",
       "note": "sur-echantillonnage des 4 langues notees (teste la limite du guardrail)",
       "config": {
@@ -54,7 +122,7 @@
         "note": "sur-echantillonnage des 4 langues notees (teste la limite du guardrail)"
       },
       "vocab_size": 10000,
-      "train_seconds": 26.741681337356567,
+      "train_seconds": 29.267926931381226,
       "score": 1.9799340002587336,
       "fertility": {
         "en": 1.9503328849653552,
@@ -118,7 +186,7 @@
         "note": "comme c4 + amharique sur-echantillonne x2"
       },
       "vocab_size": 10000,
-      "train_seconds": 23.28008270263672,
+      "train_seconds": 25.14538335800171,
       "score": 2.0115681314362943,
       "fertility": {
         "en": 1.9172139393459855,
@@ -180,7 +248,7 @@
         "note": "ponctuation collée au mot (WhitespaceSplit)"
       },
       "vocab_size": 10000,
-      "train_seconds": 19.095489025115967,
+      "train_seconds": 21.962825775146484,
       "score": 2.02293696540904,
       "fertility": {
         "en": 1.8648000994698708,
@@ -242,7 +310,7 @@
         "note": "WhitespaceSplit + min_frequency=5"
       },
       "vocab_size": 10000,
-      "train_seconds": 20.17452383041382,
+      "train_seconds": 22.800596475601196,
       "score": 2.02293696540904,
       "fertility": {
         "en": 1.8648000994698708,
@@ -304,7 +372,7 @@
         "note": "WhitespaceSplit + mf=10 + alphabet complet (supprime les UNK connus)"
       },
       "vocab_size": 10000,
-      "train_seconds": 20.49675679206848,
+      "train_seconds": 22.286433458328247,
       "score": 2.02293696540904,
       "fertility": {
         "en": 1.8648000994698708,
@@ -366,7 +434,7 @@
         "note": "modele Unigram + alphabet complet"
       },
       "vocab_size": 10000,
-      "train_seconds": 297.99358201026917,
+      "train_seconds": 327.1166718006134,
       "score": 2.034070939370922,
       "fertility": {
         "en": 1.8607760910601454,
@@ -428,7 +496,7 @@
         "note": "référence : BPE+NFC+Whitespace, mf=2 (doit redonner ~2.0600)"
       },
       "vocab_size": 10000,
-      "train_seconds": 17.078035354614258,
+      "train_seconds": 28.014209508895874,
       "score": 2.059977421976358,
       "fertility": {
         "en": 1.8892606449716849,
@@ -490,7 +558,7 @@
         "note": "ByteLevel(use_regex) : round-trip sans perte, zero UNK"
       },
       "vocab_size": 10000,
-      "train_seconds": 29.03248143196106,
+      "train_seconds": 36.42779898643494,
       "score": 2.082581950032966,
       "fertility": {
         "en": 1.8889215431394049,
@@ -541,10 +609,10 @@
     }
   ],
   "best": {
-    "name": "c8-scoredboost",
-    "score": 1.9799340002587336,
+    "name": "c9-bytefallback",
+    "score": 1.936819954499466,
     "config": {
-      "name": "c8-scoredboost",
+      "name": "c9-bytefallback",
       "model": "bpe",
       "pre": "whitespace_split",
       "min_freq": 5,
@@ -555,13 +623,14 @@
         "yo": 2,
         "am": 2
       },
-      "note": "sur-echantillonnage des 4 langues notees (teste la limite du guardrail)"
+      "byte_fallback": true,
+      "note": "EXP-004 : c8 + byte_fallback (256 tokens <0xXX>) -> supprime les [UNK]"
     },
     "guardrail_pass": true,
-    "model_path": "/content/models/optimized_c8-scoredboost/tokenizer.json"
+    "model_path": "/content/models/optimized_c9-bytefallback/tokenizer.json"
   },
   "environment": {
     "tokenizers": "0.22.1",
-    "timestamp_utc": "2026-09-10T01:27:52Z"
+    "timestamp_utc": "2026-09-10T02:44:50Z"
   }
 }

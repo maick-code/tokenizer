@@ -1,6 +1,6 @@
 # Maick Dane Nkou
 
-Individual entry — tokenizer `c8-scoredboost`.
+Individual entry — tokenizer `c9-bytefallback`.
 
 ## Approach
 
@@ -8,8 +8,8 @@ Individual entry — tokenizer `c8-scoredboost`.
 - Normalizer: NFC (no ASCII folding, no accent stripping, no lowercasing)
 - Pre-tokenizer: `WhitespaceSplit` — punctuation stays attached to its word, so no token is
   spent on isolated `,` `.` `)` …
-- Byte fallback: no — the few `[UNK]` left are rare non-African residues of the source
-  text (Arabic presentation forms, CJK, kana, hangul, emoji)
+- Byte fallback: yes — the 256 `<0xXX>` tokens cover every possible UTF-8 character, so
+  no `[UNK]` can ever be emitted
 - Training corpus: official `train` split only, balanced round-robin over the six
   languages with am/ha/sw/yo oversampled x2; no external corpus and no pre-trained tokenizer
 - Post-processor / decoder: none
@@ -19,16 +19,16 @@ Individual entry — tokenizer `c8-scoredboost`.
 
 | Language | Fertility | UNK rate | Score |
 |---|---:|---:|---:|
-| Hausa | 1.6528 | 0.000479 | 1.7006 |
-| Swahili | 1.8487 | 0.000029 | 1.8516 |
-| Yoruba | 1.8294 | 0.000140 | 1.8434 |
-| Amharic | 2.3604 | 0.001637 | 2.5241 |
-| English | 1.9503 | 0.000057 | 1.9560 |
-| French | 2.0205 | 0.000695 | 2.0900 |
+| English | 1.9599 | 0.000000 | 1.9599 |
+| French | 2.0367 | 0.000000 | 2.0367 |
+| Hausa | 1.6658 | 0.000000 | 1.6658 |
+| Swahili | 1.8600 | 0.000000 | 1.8600 |
+| Yoruba | 1.8404 | 0.000000 | 1.8404 |
+| Amharic | 2.3811 | 0.000000 | 2.3811 |
 
-- **Score (mean of ha, sw, yo, am): 1.9799** — baseline BPE 10k 2.0600, i.e. a gain of +0.0800 (3.9 %)
-- Context guardrail EN/FR: **PASS** (budget 2.2112, en 1.9503, fr 2.0205)
-- UNK emitted on validation: 255
+- **Score (mean of ha, sw, yo, am): 1.9368** — baseline BPE 10k 2.0600, i.e. a gain of +0.1232 (6.0 %)
+- Context guardrail EN/FR: **PASS** (budget 2.2273, en 1.9599, fr 2.0367)
+- UNK emitted on validation: 0
 
 ## Files
 
