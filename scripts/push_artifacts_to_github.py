@@ -400,6 +400,26 @@ def main(argv: list[str] | None = None) -> int:
     elif exists.returncode != 0 and not token:
         log("(impossible de vérifier la branche sans token : le push tranchera.)")
 
+    # --- resynchronisation ---------------------------------------------------
+    # Un clone Colab réutilisé (ou un clone créé dans une session précédente) peut être
+    # en retard sur la branche distante : le commit local ne serait alors pas un
+    # fast-forward et le push serait refusé. On se replace d'abord sur la tête distante ;
+    # les artefacts étant recopiés juste après, rien n'est perdu.
+    fetch = git(repo, "fetch", authed_url(repo_url, token) if token else repo_url, branch)
+    if fetch.returncode == 0:
+        ancestor = git(repo, "merge-base", "--is-ancestor", "FETCH_HEAD", "HEAD")
+        if ancestor.returncode == 0:
+            log("clone à jour avec la branche distante.")
+        else:
+            local = git(repo, "rev-parse", "--short", "HEAD").stdout.strip()
+            remote = git(repo, "rev-parse", "--short", "FETCH_HEAD").stdout.strip()
+            log(f"clone en retard ({local}) sur la branche distante ({remote}) : "
+                "resynchronisation sur la tête distante (les artefacts sont recopiés ensuite).")
+            git_or_die(repo, token, "checkout", "-B", branch, "FETCH_HEAD",
+                       what=f"git checkout -B {branch} {remote}")
+    else:
+        log("fetch impossible (réseau ?) : on tente le push tel quel.")
+
     for rel in files:
         destination = repo / rel
         destination.parent.mkdir(parents=True, exist_ok=True)
