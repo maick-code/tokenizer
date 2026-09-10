@@ -8,6 +8,8 @@ Individual entry — tokenizer `c8-scoredboost`.
 - Normalizer: NFC (no ASCII folding, no accent stripping, no lowercasing)
 - Pre-tokenizer: `WhitespaceSplit` — punctuation stays attached to its word, so no token is
   spent on isolated `,` `.` `)` …
+- Byte fallback: no — the few `[UNK]` left are rare non-African residues of the source
+  text (Arabic presentation forms, CJK, kana, hangul, emoji)
 - Training corpus: official `train` split only, balanced round-robin over the six
   languages with am/ha/sw/yo oversampled x2; no external corpus and no pre-trained tokenizer
 - Post-processor / decoder: none
