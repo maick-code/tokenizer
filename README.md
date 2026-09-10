@@ -79,14 +79,16 @@ La section **18** du notebook publie tout automatiquement (méthode 2 : avec tok
    masqué s'affiche → **coller le token** → Entrée.
 3. Exécuter la cellule **18.2** : elle vérifie le token, clone le dépôt, copie
    `models/` + `reports/`, commite et **pousse**.
-   La branche cible se règle en haut de la cellule : `BRANCH = "main"`
-   (ou `"arena/01a0889d-tokenizer"`).
-4. Vérifier : `https://github.com/maick-code/tokenizer/tree/<BRANCH>/reports`.
+   La branche cible se règle en haut de la cellule — par défaut
+   `BRANCH = "arena/01a0889d-tokenizer"` : **`main` n'est pas touchée**.
+4. Vérifier :
+   <https://github.com/maick-code/tokenizer/tree/arena/01a0889d-tokenizer/reports>.
 
-> **Choix de la branche cible** (ligne `BRANCH` dans la cellule 18.2) :
-> - `BRANCH = "main"` → les rapports apparaissent directement sur la page d'accueil du dépôt ;
-> - `BRANCH = "arena/01a0889d-tokenizer"` → `main` reste totalement intact, les rapports vont
->   sur la branche de travail (visible via `github.com/maick-code/tokenizer/tree/arena/01a0889d-tokenizer/reports`).
+> **Branche cible** (ligne `BRANCH` dans la cellule 18.2) :
+> - `BRANCH = "arena/01a0889d-tokenizer"` *(valeur par défaut)* → tout va sur la branche de
+>   travail, `main` reste totalement intacte ;
+> - `BRANCH = "main"` → à n'utiliser que si l'on veut publier directement sur la branche par
+>   défaut du dépôt.
 
 > Alternative sans champ de saisie : si un secret Colab nommé `GITHUB_TOKEN` existe
 > (icône 🔑 → *Add new secret* → *Notebook access*), la cellule 18.1 le détecte et l'utilise

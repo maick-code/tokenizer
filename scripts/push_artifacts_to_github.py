@@ -31,7 +31,7 @@ import zipfile
 from pathlib import Path
 
 DEFAULT_REPO_URL = "https://github.com/maick-code/tokenizer.git"
-DEFAULT_BRANCH = "main"
+DEFAULT_BRANCH = "arena/01a0889d-tokenizer"  # branche de travail (main reste intacte)
 CLONE_DIR = Path("/content/tokenizer")
 
 # Chemins relatifs à la racine des artefacts (source), identiques dans le dépôt.
