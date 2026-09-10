@@ -180,23 +180,52 @@ par **saisie masquée**.
 GitHub → *Settings* → *Developer settings* → *Personal access tokens* → *Tokens (classic)* →
 **Generate new token (classic)** → portée **`repo`** → copier le token (`ghp_...`).
 
-### 2. Utilisation
+### 2. Utilisation dans Google Colab (recommandé)
 
-**Colab** (récupérer d'abord le script) :
+⚠️ Dans Colab, `!python script.py` lance un **sous-processus** : il n'a ni accès aux Secrets
+Colab, ni à l'interface du notebook (donc **pas de champ masqué**). Pour avoir la saisie masquée,
+exécuter le script **dans une cellule Python** :
 
 ```python
+# cellule 1 — récupérer le script
 !wget -q https://raw.githubusercontent.com/maick-code/tokenizer/arena/01a0889d-tokenizer/scripts/push_artifacts_to_github.py
-!python push_artifacts_to_github.py --source /content
-# le champ « Colle ton token GitHub puis Entrée : » s'affiche -> coller le token
+
+# cellule 2 — publier (un champ masqué « Colle ton token GitHub puis valide » apparaît)
+import sys, runpy
+sys.argv = ["push_artifacts_to_github.py", "--source", "/content"]
+try:
+    runpy.run_path("/content/push_artifacts_to_github.py", run_name="__main__")
+except SystemExit as exc:
+    print("code de sortie :", exc.code)
 ```
 
-**Local** (dans le dépôt) :
+Pour inclure le dossier de soumission :
+
+```python
+sys.argv = ["push_artifacts_to_github.py", "--source", "/content", "--include-submissions"]
+```
+
+**Variante sans rien taper** (le token est lu dans un secret Colab) :
+
+1. Colab → icône **clé 🔑** → *Add new secret* → *Name* : `GITHUB_TOKEN` → *Value* : votre token
+   → activer **Notebook access**.
+2. Le script le détecte automatiquement (priorité sur le champ masqué), en cellule Python **ou**
+   avec `!python` :
+
+```python
+from google.colab import userdata
+import os
+os.environ["GITHUB_TOKEN"] = userdata.get("GITHUB_TOKEN")   # mémoire seulement
+!python push_artifacts_to_github.py --source /content
+```
+
+### 2bis. Utilisation en local
 
 ```bash
 python scripts/push_artifacts_to_github.py --source .
 ```
 
-**Sans saisie** (le token est alors pris dans la variable d'environnement `GITHUB_TOKEN`) :
+Sans saisie (token dans l'environnement) :
 
 ```bash
 GITHUB_TOKEN=ghp_xxx python scripts/push_artifacts_to_github.py --source .

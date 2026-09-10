@@ -14,7 +14,16 @@ Ce qui est publié (par défaut) :
 
 Exemples
 --------
-Colab (après avoir exécuté un notebook) :
+Colab — recommandé (dans une cellule Python, champ masqué actif) :
+    import sys, runpy
+    sys.argv = ["push_artifacts_to_github.py", "--source", "/content", "--include-submissions"]
+    try:
+        runpy.run_path("/content/push_artifacts_to_github.py", run_name="__main__")
+    except SystemExit as exc:
+        print("code de sortie :", exc.code)
+
+Colab — avec !python : un sous-processus n'a ni champ masqué ni Secrets, il faut
+fournir le token autrement (secret exporté dans l'environnement, ou --token-file) :
     !python scripts/push_artifacts_to_github.py --source /content
 
 Colab, en incluant le dossier de soumission :
@@ -95,8 +104,55 @@ def token_from_colab_secret() -> str | None:
         return None
 
 
+_COLAB_MASKED_FIELD_JS = r"""
+new Promise((resolve) => {
+  const box = document.createElement('div');
+  box.style.cssText = 'font-family:monospace;padding:10px;margin-top:6px;'
+                    + 'border:1px solid #c8c8c8;border-radius:6px;display:inline-block';
+  const label = document.createElement('span');
+  label.textContent = 'Colle ton token GitHub puis valide : ';
+  const input = document.createElement('input');
+  input.type = 'password';
+  input.style.cssText = 'font-size:14px;padding:3px 5px;width:330px';
+  const button = document.createElement('button');
+  button.textContent = 'Enregistrer';
+  button.style.cssText = 'margin-left:8px;padding:3px 12px';
+  const done = () => {
+    input.disabled = true; button.disabled = true;
+    const value = input.value; box.remove(); resolve(value);
+  };
+  button.addEventListener('click', done);
+  input.addEventListener('keydown', (event) => { if (event.key === 'Enter') done(); });
+  box.appendChild(label); box.appendChild(input); box.appendChild(button);
+  document.body.appendChild(box);
+  input.focus();
+})
+"""
+
+
+def token_from_colab_masked_field() -> str | None:
+    """Champ de saisie masqué natif Colab (nécessite d'exécuter le script EN PROCESSUS).
+
+    Fonctionne quand le script est lancé dans une cellule Python (``runpy``), pas
+    avec ``!python`` : un sous-processus n'a pas accès à l'interface du notebook.
+    """
+    try:
+        from google.colab import output  # type: ignore
+    except Exception:
+        return None
+    try:
+        value = output.eval_js(_COLAB_MASKED_FIELD_JS)
+    except Exception as exc:
+        log(f"Champ masqué Colab indisponible ({type(exc).__name__}) : repli sur la saisie classique.")
+        return None
+    if isinstance(value, str) and value.strip():
+        log("Token saisi dans le champ masqué Colab (non affiché).")
+        return value.strip().strip('"').strip("'")
+    return None
+
+
 def read_token(args: argparse.Namespace) -> str | None:
-    """Token par ordre de priorité : --token-file, env, secret Colab, saisie masquée."""
+    """Token par ordre de priorité : --token-file, env, secret Colab, champ masqué Colab, saisie."""
     if args.token_file:
         path = Path(args.token_file)
         if not path.is_file():
@@ -119,6 +175,10 @@ def read_token(args: argparse.Namespace) -> str | None:
 
     if args.no_input:
         return None
+
+    token = token_from_colab_masked_field()
+    if token:
+        return token
 
     prompt = "Colle ton token GitHub puis Entrée : "
     try:
