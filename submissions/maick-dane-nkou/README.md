@@ -5,14 +5,13 @@ Individual entry — tokenizer `c9-bytefallback`.
 ## Approach
 
 - Model: BPE with `[UNK]` as unknown token; vocabulary 10,000 / 10,000
-- Normalizer: NFC (no ASCII folding, no accent stripping, no lowercasing)
-- Pre-tokenizer: `WhitespaceSplit` — punctuation stays attached to its word, so no token is
-  spent on isolated `,` `.` `)` …
+- Normalizer: NFC
+- Pre-tokenizer: `WhitespaceSplit` — punctuation stays attached to its word, so no token is spent on isolated `,` `.` `)` …
 - Byte fallback: yes — the 256 `<0xXX>` tokens cover every possible UTF-8 character, so
   no `[UNK]` can ever be emitted
 - Training corpus: official `train` split only, balanced round-robin over the six
   languages with am/ha/sw/yo oversampled x2; no external corpus and no pre-trained tokenizer
-- Post-processor / decoder: none
+- Post-processor: none | Decoder: ByteFallback
 - Built with `tokenizers==0.22.1`
 
 ## Results (official validation split, official metric)
