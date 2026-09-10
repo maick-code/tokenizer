@@ -2,6 +2,6 @@ team: Maick Dane Nkou
 members:
 - Maick Dane Nkou
 affiliation: AIMS SOUTH AFRICA
-approach: BPE 10k (c9-bytefallback), NFC, WhitespaceSplit pre-tokenization, byte fallback
-  (256 <0xXX> tokens, no [UNK]), official train split only with am/ha/sw/yo oversampled
-  x2, validation 1.9368 (baseline 2.0600), EN/FR guardrail PASS
+approach: BPE 10k (c12-alph500-bf), NFC, WhitespaceSplit pre-tokenization, byte fallback
+  (256 <0xXX> tokens, no [UNK]), alphabet limited to the 500 most frequent characters,
+  validation 1.8359 (baseline 2.0600), EN/FR guardrail PASS
