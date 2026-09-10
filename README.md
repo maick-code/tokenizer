@@ -83,6 +83,11 @@ Diagnostic : l'**amharique** domine le score (2,4899 = 1,32× l'anglais, 130 `[U
 multilingues de Wikipédia** (CJK, kana, hangul, formes de présentation arabes, cyrillique,
 hébreu, syriaque, emoji), **jamais** des diacritiques yoruba/hausa ni du guèze.
 
+> ℹ️ Le fichier `reports/baseline_bpe_10k.json` a été produit **avant** la lecture des règles
+> officielles : son champ `12_guardrails` indique `N/A`. Le verdict vérifié avec le code officiel
+> du challenge (**PASS / PASS**, budget 2.303300) est consigné dans
+> `reports/official_check_baseline.json`, avec le test d'équivalence de la métrique.
+
 ## Structure du projet
 
 ```text
