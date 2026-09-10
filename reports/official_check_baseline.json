@@ -1,0 +1,53 @@
+{
+  "purpose": "Verification of the committed baseline tokenizer with the OFFICIAL challenge code (competition/validation.py + competition/metrics.py), run locally on the real tokenizer.json produced by the Colab run.",
+  "official_source": "https://github.com/aims-ai-research-foundations/airf-multilingual-tokenizer-challenge",
+  "checked_at_utc": "2026-09-10T01:00:48Z",
+  "validator": {
+    "valid": true,
+    "path": "/tmp/subm/tokenizer.json",
+    "vocab_size": 10000,
+    "file_size_bytes": 515932,
+    "tokenizers_version": "0.22.1",
+    "checks": {
+      "file_size": true,
+      "loads": true,
+      "vocabulary": true,
+      "encodes_all_languages": true,
+      "decodes": true,
+      "compatible_version": true
+    },
+    "errors": [],
+    "unknown_tokens": 0,
+    "lossy_languages": [
+      "en",
+      "fr",
+      "ha",
+      "sw",
+      "yo",
+      "am"
+    ]
+  },
+  "guardrail": {
+    "rule": "budget = 1.15 * mean(raw fertility of ha, sw, yo, am); breach if en or fr above budget",
+    "ratio": 1.15,
+    "raw_scored_mean_fertility": 2.002869,
+    "budget": 2.3033,
+    "english": {
+      "fertility": 1.889261,
+      "verdict": "PASS",
+      "margin": 0.414039
+    },
+    "french": {
+      "fertility": 1.98887,
+      "verdict": "PASS",
+      "margin": 0.31443
+    },
+    "breaches": []
+  },
+  "score_recomputed_with_official_code": 2.059977,
+  "score_source": "reports/baseline_bpe_10k.json (Colab run, split validation)",
+  "environment": {
+    "tokenizers": "0.22.1",
+    "python": "3.11.2"
+  }
+}

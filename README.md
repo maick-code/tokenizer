@@ -1,26 +1,87 @@
 # tokenizer — AIMS Africa Multilingual Tokenizer Challenge
 
-Baselines et expériences de tokenizer pour le **AIMS Africa Multilingual Tokenizer Challenge**.
+[Challenge officiel](https://airf.aims.ac.za/community/africa-multilingual-tokenizer-challenge/) ·
+[dépôt d'évaluation officiel](https://github.com/aims-ai-research-foundations/airf-multilingual-tokenizer-challenge) ·
+[dataset](https://huggingface.co/datasets/Similoluwa/african-multilingual-tokenizer-challenge)
 
 ## Statut actuel
 
 | Élément | Valeur |
 |---|---|
-| Expérience | **Baseline `BPE 10K`** (aucune optimisation) |
-| Dataset | `Similoluwa/african-multilingual-tokenizer-challenge` |
-| Révision | `v1.0.0` |
-| Pipeline | Dataset officiel → NFC → Whitespace → BPE → 10 000 tokens max → Évaluation |
-| Split d'entraînement | `train` (240 000 exemples, 40 000/langue) |
-| Split d'évaluation | `validation` (24 000 exemples, 4 000/langue) |
-| Métrique | `score = fertility + 100 * unk_rate`, `fertility = tokens / words` |
-| Score cible | Moyenne sur `ha`, `sw`, `yo`, `am` |
+| Étape 1 | **Baseline `BPE 10K`** → score officiel **2.059977** (guardrails EN/FR **PASS**) |
+| Étape 2 | **`02_optimization_sweep.ipynb`** — balayage de configurations avec la métrique officielle (à exécuter dans Colab) |
+| Dataset | `Similoluwa/african-multilingual-tokenizer-challenge` — révision `v1.0.0` |
+| Splits | `train` 240 000 (40 000/langue) · `validation` 24 000 (4 000/langue) |
+| Métrique | `score = fertility + 100 × unk_rate`, moyenne sur `ha`, `sw`, `yo`, `am` |
+| Version imposée | **`tokenizers==0.22.1`** (le checker officiel vérifie l'égalité exacte) |
+| Vocabulaire max | 10 000 (`get_vocab_size(with_added_tokens=True)`) |
+| Taille max `tokenizer.json` | 20 MiB |
 
-> ⚠️ **Aucun score n'est fabriqué.** L'environnement de développement (Arena) n'a pas
-> accès réseau à Hugging Face : le notebook n'a donc **pas** pu être exécuté sur le
-> dataset réel ici. Il est conçu pour être exécuté de haut en bas dans **Google Colab**
-> et calcule alors tous les scores réels (vocabulaire, fertility, UNK rate, score,
-> rapports). Les artefacts `models/…` et `reports/…` produits par Colab peuvent ensuite
-> être commités dans ce dépôt.
+> ✅ **Vérifié avec le code officiel du challenge** (celui de l'évaluateur) : le tokenizer de la
+> baseline **passe** le checker officiel (`valid=True`, vocab 10 000, 503,8 KiB) et le **guardrail
+> EN/FR est PASS**. Voir « Résultats de la baseline » plus bas.
+>
+> ⚠️ L'environnement de développement (Arena) n'a **pas** accès réseau à Hugging Face : les
+> entraînements tournent dans **Google Colab**, les scores réels sont calculés là-bas.
+
+## Règles officielles (extraites du code du challenge, pas supposées)
+
+Fichiers de référence : `competition/constants.py`, `competition/metrics.py`,
+`competition/validation.py`, `competition/submissions.py`, `starter/utils.py`.
+
+```python
+SCORED_LANGUAGES = ("ha", "sw", "yo", "am")     # seules langues notées
+CONTEXT_LANGUAGES = ("en", "fr")                # guardrail
+CONTEXT_FERTILITY_RATIO = 1.15
+UNKNOWN_PENALTY = 100.0
+MAX_VOCAB_SIZE = 10_000
+MAX_TOKENIZER_BYTES = 20 * 1024 * 1024
+SUPPORTED_TOKENIZERS_VERSION = "0.22.1"
+```
+
+- **Mot** = `len(text.split())` · **fertility** = `tokens / words` · **score** = `fertility + 100 × unk_rate`.
+- **Score final** = moyenne des scores de `ha`, `sw`, `yo`, `am` (plus bas = meilleur).
+- **Guardrail EN/FR** :
+  ```python
+  budget = 1.15 × moyenne(fertility BRUTE de ha, sw, yo, am)
+  # échec si fertility["en"] > budget OU fertility["fr"] > budget  -> soumission invalide
+  ```
+  ⚠️ Le budget est **relatif à votre propre tokenizer** : améliorer beaucoup les langues notées
+  **abaisse** le budget et peut casser le guardrail. `02_optimization_sweep.ipynb` vérifie donc le
+  guardrail pour **chaque** configuration.
+- **Contraintes** : un seul tokenizer pour 6 langues ; entraînement **uniquement** sur le `train`
+  fourni (aucun corpus externe, aucun tokenizer pré-entraîné) ; le tokenizer doit fonctionner
+  **sans code du participant** ; temps d'évaluation ≤ 5× celui de la baseline.
+
+### Soumission (workflow officiel)
+
+1. *Fork* de `aims-ai-research-foundations/airf-multilingual-tokenizer-challenge`.
+2. Branche nommée **exactement `submission`**.
+3. Un dossier `submissions/<slug>/` (slug en minuscules kebab-case) contenant :
+   `tokenizer.json` (obligatoire), `metadata.yml` (obligatoire), `notebook.ipynb` (avant la date
+   limite), `README.md` (optionnel). **Rien d'autre** — pas de symlink, `metadata.yml` ≤ 16 KiB.
+4. *Pull Request* vers le dépôt officiel (la PR ne doit toucher **que** `submissions/<slug>/`).
+
+## Résultats de la baseline (valeurs réelles, split `validation`)
+
+| Language | Words | Tokens | Fertility | UNK | UNK Rate | Score |
+|---|---:|---:|---:|---:|---:|---:|
+| English | 88 469 | 167 141 | 1.8893 | 5 | 0.000057 | 1.8949 |
+| French | 90 652 | 180 295 | 1.9889 | 63 | 0.000695 | 2.0584 |
+| Hausa* | 89 819 | 154 957 | **1.7252** | 43 | 0.000479 | **1.7731** |
+| Swahili* | 69 832 | 133 438 | 1.9108 | 2 | 0.000029 | **1.9137** |
+| Yoruba* | 85 758 | 161 700 | 1.8855 | 12 | 0.000140 | **1.8995** |
+| Amharic* | 79 413 | 197 729 | **2.4899** | 130 | 0.001637 | **2.6536** |
+| | | | | | **Target average** | **2.059977** |
+
+`*` = langues notées. Vocabulaire réel : **10 000 / 10 000**. Guardrail officiel :
+`budget = 1.15 × 2.002869 = 2.303300` → English 1.8893 **PASS** (marge +0.4140),
+French 1.9889 **PASS** (marge +0.3144).
+
+Diagnostic : l'**amharique** domine le score (2,4899 = 1,32× l'anglais, 130 `[UNK]`) ; le
+**hausa** est le plus efficace (0,91× l'anglais). Les 255 `[UNK]` proviennent de **résidus
+multilingues de Wikipédia** (CJK, kana, hangul, formes de présentation arabes, cyrillique,
+hébreu, syriaque, emoji), **jamais** des diacritiques yoruba/hausa ni du guèze.
 
 ## Structure du projet
 
@@ -29,11 +90,13 @@ tokenizer/
 ├── README.md
 ├── .gitignore
 ├── notebooks/
-│   └── 01_baseline_bpe_10k.ipynb   # Baseline BPE 10K (Colab-ready, auto-suffisant)
-├── models/                          # créé par le notebook en Colab
-│   └── baseline_bpe_10k/
-│       └── tokenizer.json
-└── reports/                         # créé par le notebook en Colab
+│   ├── 01_baseline_bpe_10k.ipynb      # Étape 1 : baseline BPE 10K (scores de référence)
+│   └── 02_optimization_sweep.ipynb    # Étape 2 : balayage d'optimisation (métrique officielle)
+├── scripts/
+│   └── push_artifacts_to_github.py    # pousse models/ + reports/ vers GitHub
+├── models/
+│   └── baseline_bpe_10k/tokenizer.json
+└── reports/
     ├── baseline_bpe_10k.json
     └── baseline_bpe_10k.md
 ```
@@ -130,17 +193,32 @@ Contraintes respectées :
 - Pas d'optimisation pour cette baseline (pas de ByteLevel, UnicodeScripts,
   ParityBpeTrainer, WordPiece, Unigram, autre `vocab_size` ou autre `min_frequency`).
 
-## Guardrails English / French
+## Étape 2 — optimisation (`notebooks/02_optimization_sweep.ipynb`)
 
-La documentation publique du challenge accessible (fiche Hugging Face du dataset à la
-révision `v1.0.0`, vérifiée le 10/09/2026) **ne définit pas de seuil numérique officiel**
-pour les guardrails English/French. Le notebook affiche donc les scores English/French
-réels mais **n'affirme pas** de verdict `PASS`/`FAIL` tant qu'aucun seuil officiel n'est
-fourni. Dès que les règles officielles sont disponibles, renseigner dans le notebook :
+Balayage de configurations **avec la métrique officielle**, exécutable dans Colab après avoir
+remplacé le dataset réel (le notebook charge le dataset officiel lui-même) :
 
-```python
-EN_GUARDRAIL_MAX_SCORE = None   # ex. valeur limite officielle
-FR_GUARDRAIL_MAX_SCORE = None
-```
+1. `b1-baseline` — référence (doit redonner ≈ 2.0600).
+2. `c2-wssplit-mf2` — pré-tokeniseur `WhitespaceSplit` (la ponctuation reste collée au mot :
+   le baseline dépensait ~43 000 tokens sur la validation pour `,` et `.` isolés).
+3. `c3-wssplit-mf5` — + `min_frequency=5`.
+4. `c4-wssplit-mf10-alpha` — + `min_frequency=10` + alphabet initial complet (supprime les `[UNK]`).
+5. `c5-bytelevel` — `ByteLevel(use_regex=True)` : round-trip sans perte, zéro `[UNK]`
+   (mais coûteux en octets pour l'éthiopien : à mesurer).
+6. `c6-unigram-alpha` — modèle **Unigram** + alphabet complet.
+7. `c7-…-amboost` — sur-échantillonnage de l'amharique (×2).
+8. `c8-scoredboost` — sur-échantillonnage des 4 langues notées (teste la limite du guardrail).
 
-Le verdict `PASS`/`FAIL` est alors calculé (jamais supposé).
+Le notebook : entraîne, évalue (score + guardrail **par configuration**), classe, sauvegarde le
+meilleur (`models/optimized_<config>/tokenizer.json`), écrit `reports/optimization_sweep.{json,md}`,
+génère `submissions/<slug>/` et exécute le **checker officiel** (`starter/utils.py`).
+
+> ⚙️ `MAX_TRAIN_DOCS = 60_000` dans la cellule 2 permet un pré-balayage rapide avant de relancer
+> les 2–3 meilleures configurations sur les 240 000 textes.
+
+## Guardrails English / French — règle officielle
+
+Le guardrail est **relatif** (voir « Règles officielles ») :
+`budget = 1.15 × moyenne(fertility brute de ha, sw, yo, am)` ; échec si `fertility(en)` ou
+`fertility(fr)` dépasse ce budget. Les deux notebooks l'implémentent et affichent un verdict
+`PASS`/`FAIL` explicite (plus aucun seuil supposé).
