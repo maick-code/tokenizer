@@ -180,6 +180,20 @@ par **saisie masquée**.
 GitHub → *Settings* → *Developer settings* → *Personal access tokens* → *Tokens (classic)* →
 **Generate new token (classic)** → portée **`repo`** → copier le token (`ghp_...`).
 
+### 2bis. Depuis le notebook (cellule intégrée)
+
+Les notebooks **contiennent la cellule de publication** : plus rien à télécharger.
+
+- `notebooks/01_baseline_bpe_10k.ipynb` → section **18** : une cellule écrit le script
+  (`%%writefile push_artifacts_to_github.py`) puis la suivante l'exécute.
+- `notebooks/02_optimization_sweep.ipynb` → section **12** : identique, avec
+  `--include-submissions` en plus.
+
+Il suffit d'exécuter ces cellules après le reste du notebook : un **champ masqué**
+« Colle ton token GitHub puis valide » apparaît. Le script est lancé **dans le processus** du
+notebook (via `runpy`), condition nécessaire pour que le champ masqué et les Secrets Colab soient
+accessibles — un `!python` en sous-processus ne les verrait pas.
+
 ### 2. Utilisation dans Google Colab (recommandé)
 
 ⚠️ Dans Colab, `!python script.py` lance un **sous-processus** : il n'a ni accès aux Secrets
