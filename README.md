@@ -70,41 +70,26 @@ machine temporaire ; quand on ouvre un notebook depuis GitHub, le dépôt n'est 
 (seul le notebook est copié en mémoire). Les fichiers générés existent donc uniquement dans la
 VM Colab : `/content/models/...` et `/content/reports/...`, jusqu'à l'extinction de la VM.
 
-La section **18** du notebook (`Récupérer les artefacts`) automatise tout. Trois méthodes :
+La section **18** du notebook publie tout automatiquement (méthode 2 : avec token GitHub) :
 
-**Méthode 1 — sans token (la plus simple)**
-1. Exécuter la cellule de la section 18 → elle crée `baseline_bpe_10k_artifacts.zip`.
-2. Panneau `Fichiers` de Colab → clic droit sur le zip → `Télécharger`.
-3. Le dézipper, puis déposer :
-   - `tokenizer.json` → `models/baseline_bpe_10k/tokenizer.json`
-   - `baseline_bpe_10k.json` et `baseline_bpe_10k.md` → `reports/`
-   soit via l'interface GitHub (*Add file* → *Upload files*), soit en local avec `git`.
+1. **Créer le token** (une seule fois) : GitHub → *Settings* → *Developer settings* →
+   *Personal access tokens* → *Tokens (classic)* → **Generate new token (classic)** →
+   cocher la portée **`repo`** → générer et copier le token (`ghp_...`).
+2. **Exécuter le notebook** (`Runtime ▸ Run all`), puis la cellule **18.1** : un champ de saisie
+   masqué s'affiche → **coller le token** → Entrée.
+3. Exécuter la cellule **18.2** : elle vérifie le token, clone le dépôt, copie
+   `models/` + `reports/`, commite et **pousse**.
+   La branche cible se règle en haut de la cellule : `BRANCH = "main"`
+   (ou `"arena/01a0889d-tokenizer"`).
+4. Vérifier : <https://github.com/maick-code/tokenizer/tree/main/reports>.
 
-**Méthode 2 — token GitHub : tout automatique (deep-dive)**
-
-1. **Créer le token** : GitHub → *Settings* → *Developer settings* → *Personal access tokens* →
-   *Tokens (classic)* → **Generate new token (classic)** → cocher la portée **`repo`** →
-   générer et **copier** le token (il ne sera plus affiché).
-2. **L'enregistrer dans Colab** : icône **clé 🔑** dans la barre latérale gauche → **Add new secret** :
-   - *Name* : `GITHUB_TOKEN`
-   - *Value* : le token
-   - activer **Notebook access** (interrupteur).
-3. **Exécuter le notebook** (`Runtime ▸ Run all`) puis la **section 18** : elle détecte le secret,
-   clone `https://github.com/maick-code/tokenizer.git`, copie les artefacts, commite et **pousse**.
-   Régler la branche cible en haut de la cellule : `BRANCH = "main"` (ou `"arena/01a0889d-tokenizer"`).
-4. Alternative en une commande (Colab, après le run du notebook) :
-   ```python
-   !wget -q https://raw.githubusercontent.com/maick-code/tokenizer/main/scripts/push_artifacts_to_github.py
-   !python push_artifacts_to_github.py --source /content --branch main --zip
-   ```
+> Alternative sans champ de saisie : si un secret Colab nommé `GITHUB_TOKEN` existe
+> (icône 🔑 → *Add new secret* → *Notebook access*), la cellule 18.1 le détecte et l'utilise
+> directement.
 
 Le token n'est **jamais** écrit dans le dépôt, jamais affiché (les sorties sont masquées via `***`)
 et ne doit **jamais** être partagé dans un chat. S'il fuit : le révoquer immédiatement
 (*Settings → Developer settings → Tokens → Delete*).
-
-**Méthode 3 — persister sur Google Drive** (recommandé avant de fermer Colab) : décommenter
-l'option Drive de la section 18 pour copier les artefacts dans
-`/content/drive/MyDrive/tokenizer_artifacts/`.
 
 > Le `.gitignore` n'exclut volontairement **pas** `models/` et `reports/` : ils doivent pouvoir
 > être commités. Seuls les caches (`.cache/huggingface/`, `__pycache__/`, etc.) sont ignorés.
