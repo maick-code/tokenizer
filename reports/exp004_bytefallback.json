@@ -1,0 +1,127 @@
+{
+  "experiment": "EXP-004 c9-bytefallback",
+  "date_local": "2026-09-10",
+  "acces_dataset_hf": "INDISPONIBLE depuis cet environnement (TLS bloque) : aucun score reel ici",
+  "budget_de_vocabulaire": {
+    "corpus_saturant": true,
+    "demande": 1000,
+    "c8_total": 1000,
+    "c8_merges": 986,
+    "c9_total": 1000,
+    "c9_merges": 730,
+    "depassement_c9": 0,
+    "verdict": "les 256 tokens byte sont comptes DANS vocab_size : le total reste exactement le budget demande (deduction de 256 merges appris, pas de depassement)",
+    "extrapolation_au_run_reel": {
+      "vocab_total_attendu": 10000,
+      "merges_c8": 6955,
+      "merges_c9_attendus": 6700
+    }
+  },
+  "recette_validee_localement": {
+    "modele": "BPE(unk_token='[UNK]', byte_fallback=True)",
+    "normalizer": "NFC",
+    "pre_tokenizer": "WhitespaceSplit",
+    "trainer": "BpeTrainer(vocab_size=10_000, min_frequency=5, special_tokens=['[UNK]'] + 256 tokens '<0xXX>', initial_alphabet=<alphabet du train>)",
+    "decoder": "ByteFallback()",
+    "post_traitement": "retrait des 256 entrees 'added_tokens' des tokens byte (ils restent des tokens du modele BPE, comme dans les tokenizers Llama-2)",
+    "pourquoi_special_tokens": "seul moyen MESURE de faire entrer les tokens byte dans le vocabulaire du modele : BPE(byte_fallback=True) seul n'emet que des [UNK] (0 token byte dans le vocabulaire), et add_tokens() apres entrainement ne fonctionne pas non plus (41/41 mots fautifs -> [UNK])",
+    "added_tokens_avant_apres": [
+      257,
+      1
+    ],
+    "unk_sur_les_52_caracteres_fautifs": "0/52",
+    "cout_par_caractere_utf8_tokens": {
+      "2o": 2,
+      "3o": 3,
+      "4o": 4
+    },
+    "decode_skip_special_tokens_conserve_les_octets": true,
+    "checker_officiel": {
+      "valid": true,
+      "path": "/tmp/exp004/tokenizer.json",
+      "vocab_size": 1847,
+      "file_size_bytes": 97971,
+      "tokenizers_version": "0.22.1",
+      "checks": {
+        "file_size": true,
+        "loads": true,
+        "vocabulary": true,
+        "encodes_all_languages": true,
+        "decodes": true,
+        "compatible_version": true
+      },
+      "errors": [],
+      "unknown_tokens": 0,
+      "lossy_languages": [
+        "en",
+        "fr",
+        "ha",
+        "sw",
+        "yo",
+        "am"
+      ]
+    },
+    "entrainement_seconds_corpus_de_test": 0.04
+  },
+  "estimation": {
+    "avertissement": "ESTIMATION a partir de mesures reelles, ce n'est PAS le score officiel : le score de c9 doit etre mesure dans Colab sur le split de validation officiel.",
+    "penalite_unk_retiree": 0.05711,
+    "cout_fertility_des_sequences_byte": 0.00112,
+    "gain_net_estime": 0.05599,
+    "score_estime_avant_cout_des_merges_perdus": 1.9239,
+    "cout_non_mesurable_ici": "255 merges appris en moins (6 955 -> ~6 700) : a mesurer dans Colab",
+    "detail_par_langue": {
+      "English": {
+        "caracteres_distincts": 4,
+        "tokens_en_plus_par_unk": 1.75,
+        "unk_mesures": 5,
+        "tokens_en_plus": 9
+      },
+      "French": {
+        "caracteres_distincts": 12,
+        "tokens_en_plus_par_unk": 2.0,
+        "unk_mesures": 63,
+        "tokens_en_plus": 126
+      },
+      "Hausa": {
+        "caracteres_distincts": 6,
+        "tokens_en_plus_par_unk": 2.0,
+        "unk_mesures": 43,
+        "tokens_en_plus": 86
+      },
+      "Swahili": {
+        "caracteres_distincts": 2,
+        "tokens_en_plus_par_unk": 1.0,
+        "unk_mesures": 2,
+        "tokens_en_plus": 2
+      },
+      "Yoruba": {
+        "caracteres_distincts": 7,
+        "tokens_en_plus_par_unk": 1.57,
+        "unk_mesures": 12,
+        "tokens_en_plus": 19
+      },
+      "Amharic": {
+        "caracteres_distincts": 21,
+        "tokens_en_plus_par_unk": 2.0,
+        "unk_mesures": 130,
+        "tokens_en_plus": 260
+      }
+    }
+  },
+  "cout_de_l_execution_reelle": "~27 s par configuration dans Colab (c8 en a pris 26.7)",
+  "config_notebook": {
+    "name": "c9-bytefallback",
+    "model": "bpe",
+    "pre": "whitespace_split",
+    "min_freq": 5,
+    "alphabet": true,
+    "boost": {
+      "ha": 2,
+      "sw": 2,
+      "yo": 2,
+      "am": 2
+    },
+    "byte_fallback": true
+  }
+}
