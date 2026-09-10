@@ -53,14 +53,31 @@ SUPPORTED_TOKENIZERS_VERSION = "0.22.1"
   fourni (aucun corpus externe, aucun tokenizer pré-entraîné) ; le tokenizer doit fonctionner
   **sans code du participant** ; temps d'évaluation ≤ 5× celui de la baseline.
 
-### Soumission (workflow officiel)
+### Soumission — dossier prêt
 
-1. *Fork* de `aims-ai-research-foundations/airf-multilingual-tokenizer-challenge`.
-2. Branche nommée **exactement `submission`**.
-3. Un dossier `submissions/<slug>/` (slug en minuscules kebab-case) contenant :
-   `tokenizer.json` (obligatoire), `metadata.yml` (obligatoire), `notebook.ipynb` (avant la date
-   limite), `README.md` (optionnel). **Rien d'autre** — pas de symlink, `metadata.yml` ≤ 16 KiB.
-4. *Pull Request* vers le dépôt officiel (la PR ne doit toucher **que** `submissions/<slug>/`).
+Participation **individuelle** (autorisée par le règlement ; la contrainte des deux nationalités
+ne concerne que les équipes).
+
+```text
+submissions/maick-dane-nkou/
+├── tokenizer.json    obligatoire   (tokenizer entraîné, <= 10 000 tokens)
+├── metadata.yml      obligatoire   (team: Maick Dane Nkou / member: Maick Dane Nkou)
+├── notebook.ipynb    obligatoire avant la date limite
+└── README.md         optionnel     (description de l'approche)
+```
+
+Seuls ces quatre noms de fichiers sont acceptés — aucun autre fichier, aucun symlink.
+
+### Ouvrir la Pull Request officielle
+
+1. **Fork** de `aims-ai-research-foundations/airf-multilingual-tokenizer-challenge`.
+2. Sur le fork, créer une branche nommée **exactement `submission`**.
+3. Y ajouter `submissions/maick-dane-nkou/` (les 4 fichiers) — **rien d'autre** : le workflow
+   officiel refuse toute PR qui touche un autre chemin.
+4. Pousser la branche, puis ouvrir la PR vers le dépôt officiel et cocher la checklist du template
+   (*Team slug* : `maick-dane-nkou`, *Team name* : `Maick Dane Nkou`).
+5. Le workflow `Validate submission` vérifie le format, la version de `tokenizers` (0.22.1), le
+   vocabulaire, la couverture des 6 langues et le round-trip. Le leaderboard est mis à jour la nuit.
 
 ## Résultats de la baseline (valeurs réelles, split `validation`)
 
