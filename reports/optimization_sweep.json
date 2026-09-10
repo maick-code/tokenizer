@@ -1,0 +1,567 @@
+{
+  "experiment": "optimization_sweep",
+  "dataset": {
+    "name": "Similoluwa/african-multilingual-tokenizer-challenge",
+    "revision": "v1.0.0",
+    "train_docs_used": {
+      "en": 40000,
+      "fr": 40000,
+      "ha": 40000,
+      "sw": 40000,
+      "yo": 40000,
+      "am": 40000
+    },
+    "validation_rows": 24000
+  },
+  "official_rules": {
+    "scored_languages": [
+      "ha",
+      "sw",
+      "yo",
+      "am"
+    ],
+    "context_languages": [
+      "en",
+      "fr"
+    ],
+    "guardrail_ratio": 1.15,
+    "unknown_penalty": 100.0,
+    "max_vocab_size": 10000,
+    "required_tokenizers_version": "0.22.1",
+    "word_definition": "len(text.split())"
+  },
+  "settings": {
+    "vocab_size": 10000,
+    "max_train_docs": null
+  },
+  "baseline_reference_score": 2.059977,
+  "results": [
+    {
+      "name": "c8-scoredboost",
+      "note": "sur-echantillonnage des 4 langues notees (teste la limite du guardrail)",
+      "config": {
+        "name": "c8-scoredboost",
+        "model": "bpe",
+        "pre": "whitespace_split",
+        "min_freq": 5,
+        "alphabet": true,
+        "boost": {
+          "ha": 2,
+          "sw": 2,
+          "yo": 2,
+          "am": 2
+        },
+        "note": "sur-echantillonnage des 4 langues notees (teste la limite du guardrail)"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 26.741681337356567,
+      "score": 1.9799340002587336,
+      "fertility": {
+        "en": 1.9503328849653552,
+        "fr": 2.0205290561708513,
+        "ha": 1.652757211725804,
+        "sw": 1.8487369687249398,
+        "yo": 1.8294153315142612,
+        "am": 2.3603943938649845
+      },
+      "unk_rate": {
+        "en": 5.6516972046705625e-05,
+        "fr": 0.00069496536204386,
+        "ha": 0.00047874057827408456,
+        "sw": 2.8640164967350212e-05,
+        "yo": 0.00013992863639543832,
+        "am": 0.0016370115724125773
+      },
+      "penalised": {
+        "en": 1.9559845821700257,
+        "fr": 2.0900255923752376,
+        "ha": 1.7006312695532124,
+        "sw": 1.8516009852216748,
+        "yo": 1.843408195153805,
+        "am": 2.5240955511062424
+      },
+      "tokens": {
+        "en": 172544,
+        "fr": 183165,
+        "ha": 148449,
+        "sw": 129101,
+        "yo": 156887,
+        "am": 187446
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 255,
+      "lossy_rows": 23949,
+      "raw_scored": 1.9228259764574973,
+      "guardrail_budget": 2.2112498729261216,
+      "guardrail_breaches": [],
+      "guardrail_pass": true
+    },
+    {
+      "name": "c7-wssplit-mf10-alpha-amboost",
+      "note": "comme c4 + amharique sur-echantillonne x2",
+      "config": {
+        "name": "c7-wssplit-mf10-alpha-amboost",
+        "model": "bpe",
+        "pre": "whitespace_split",
+        "min_freq": 10,
+        "alphabet": true,
+        "boost": {
+          "am": 2
+        },
+        "note": "comme c4 + amharique sur-echantillonne x2"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 23.28008270263672,
+      "score": 2.0115681314362943,
+      "fertility": {
+        "en": 1.9172139393459855,
+        "fr": 1.9671049728632573,
+        "ha": 1.729400238256939,
+        "sw": 1.9464715316760224,
+        "yo": 1.896744327059866,
+        "am": 2.2452243335474042
+      },
+      "unk_rate": {
+        "en": 5.6516972046705625e-05,
+        "fr": 0.00069496536204386,
+        "ha": 0.00047874057827408456,
+        "sw": 2.8640164967350212e-05,
+        "yo": 0.00013992863639543832,
+        "am": 0.0016370115724125773
+      },
+      "penalised": {
+        "en": 1.922865636550656,
+        "fr": 2.0366015090676433,
+        "ha": 1.7772742960843473,
+        "sw": 1.9493355481727574,
+        "yo": 1.91073719069941,
+        "am": 2.408925490788662
+      },
+      "tokens": {
+        "en": 169614,
+        "fr": 178322,
+        "ha": 155333,
+        "sw": 135926,
+        "yo": 162661,
+        "am": 178300
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 255,
+      "lossy_rows": 23948,
+      "raw_scored": 1.9544601076350578,
+      "guardrail_budget": 2.2476291237803165,
+      "guardrail_breaches": [],
+      "guardrail_pass": true
+    },
+    {
+      "name": "c2-wssplit-mf2",
+      "note": "ponctuation collée au mot (WhitespaceSplit)",
+      "config": {
+        "name": "c2-wssplit-mf2",
+        "model": "bpe",
+        "pre": "whitespace_split",
+        "min_freq": 2,
+        "alphabet": false,
+        "boost": {},
+        "note": "ponctuation collée au mot (WhitespaceSplit)"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 19.095489025115967,
+      "score": 2.02293696540904,
+      "fertility": {
+        "en": 1.8648000994698708,
+        "fr": 1.9141331686008032,
+        "ha": 1.6866587247687015,
+        "sw": 1.8909382518043303,
+        "yo": 1.8518855383754285,
+        "am": 2.4338332514827545
+      },
+      "unk_rate": {
+        "en": 5.6516972046705625e-05,
+        "fr": 0.00069496536204386,
+        "ha": 0.00047874057827408456,
+        "sw": 2.8640164967350212e-05,
+        "yo": 0.00013992863639543832,
+        "am": 0.0016370115724125773
+      },
+      "penalised": {
+        "en": 1.8704517966745413,
+        "fr": 1.9836297048051892,
+        "ha": 1.7345327825961099,
+        "sw": 1.8938022683010654,
+        "yo": 1.8658784020149723,
+        "am": 2.5975344087240124
+      },
+      "tokens": {
+        "en": 164977,
+        "fr": 173520,
+        "ha": 151494,
+        "sw": 132048,
+        "yo": 158814,
+        "am": 193278
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 255,
+      "lossy_rows": 23958,
+      "raw_scored": 1.9658289416078036,
+      "guardrail_budget": 2.260703282848974,
+      "guardrail_breaches": [],
+      "guardrail_pass": true
+    },
+    {
+      "name": "c3-wssplit-mf5",
+      "note": "WhitespaceSplit + min_frequency=5",
+      "config": {
+        "name": "c3-wssplit-mf5",
+        "model": "bpe",
+        "pre": "whitespace_split",
+        "min_freq": 5,
+        "alphabet": false,
+        "boost": {},
+        "note": "WhitespaceSplit + min_frequency=5"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 20.17452383041382,
+      "score": 2.02293696540904,
+      "fertility": {
+        "en": 1.8648000994698708,
+        "fr": 1.9141331686008032,
+        "ha": 1.6866587247687015,
+        "sw": 1.8909382518043303,
+        "yo": 1.8518855383754285,
+        "am": 2.4338332514827545
+      },
+      "unk_rate": {
+        "en": 5.6516972046705625e-05,
+        "fr": 0.00069496536204386,
+        "ha": 0.00047874057827408456,
+        "sw": 2.8640164967350212e-05,
+        "yo": 0.00013992863639543832,
+        "am": 0.0016370115724125773
+      },
+      "penalised": {
+        "en": 1.8704517966745413,
+        "fr": 1.9836297048051892,
+        "ha": 1.7345327825961099,
+        "sw": 1.8938022683010654,
+        "yo": 1.8658784020149723,
+        "am": 2.5975344087240124
+      },
+      "tokens": {
+        "en": 164977,
+        "fr": 173520,
+        "ha": 151494,
+        "sw": 132048,
+        "yo": 158814,
+        "am": 193278
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 255,
+      "lossy_rows": 23958,
+      "raw_scored": 1.9658289416078036,
+      "guardrail_budget": 2.260703282848974,
+      "guardrail_breaches": [],
+      "guardrail_pass": true
+    },
+    {
+      "name": "c4-wssplit-mf10-alpha",
+      "note": "WhitespaceSplit + mf=10 + alphabet complet (supprime les UNK connus)",
+      "config": {
+        "name": "c4-wssplit-mf10-alpha",
+        "model": "bpe",
+        "pre": "whitespace_split",
+        "min_freq": 10,
+        "alphabet": true,
+        "boost": {},
+        "note": "WhitespaceSplit + mf=10 + alphabet complet (supprime les UNK connus)"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 20.49675679206848,
+      "score": 2.02293696540904,
+      "fertility": {
+        "en": 1.8648000994698708,
+        "fr": 1.9141331686008032,
+        "ha": 1.6866587247687015,
+        "sw": 1.8909382518043303,
+        "yo": 1.8518855383754285,
+        "am": 2.4338332514827545
+      },
+      "unk_rate": {
+        "en": 5.6516972046705625e-05,
+        "fr": 0.00069496536204386,
+        "ha": 0.00047874057827408456,
+        "sw": 2.8640164967350212e-05,
+        "yo": 0.00013992863639543832,
+        "am": 0.0016370115724125773
+      },
+      "penalised": {
+        "en": 1.8704517966745413,
+        "fr": 1.9836297048051892,
+        "ha": 1.7345327825961099,
+        "sw": 1.8938022683010654,
+        "yo": 1.8658784020149723,
+        "am": 2.5975344087240124
+      },
+      "tokens": {
+        "en": 164977,
+        "fr": 173520,
+        "ha": 151494,
+        "sw": 132048,
+        "yo": 158814,
+        "am": 193278
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 255,
+      "lossy_rows": 23958,
+      "raw_scored": 1.9658289416078036,
+      "guardrail_budget": 2.260703282848974,
+      "guardrail_breaches": [],
+      "guardrail_pass": true
+    },
+    {
+      "name": "c6-unigram-alpha",
+      "note": "modele Unigram + alphabet complet",
+      "config": {
+        "name": "c6-unigram-alpha",
+        "model": "unigram",
+        "pre": "whitespace_split",
+        "min_freq": 2,
+        "alphabet": true,
+        "boost": {},
+        "note": "modele Unigram + alphabet complet"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 297.99358201026917,
+      "score": 2.034070939370922,
+      "fertility": {
+        "en": 1.8607760910601454,
+        "fr": 1.9002559237523717,
+        "ha": 1.723722152328572,
+        "sw": 1.9434643143544508,
+        "yo": 1.8732129947060332,
+        "am": 2.3875058239834788
+      },
+      "unk_rate": {
+        "en": 3.3910183228023376e-05,
+        "fr": 0.0006067157922605127,
+        "ha": 0.00038967256371146415,
+        "sw": 2.8640164967350212e-05,
+        "yo": 0.0001166071969961986,
+        "am": 0.0015488647954365155
+      },
+      "penalised": {
+        "en": 1.8641671093829477,
+        "fr": 1.960927502978423,
+        "ha": 1.7626894086997185,
+        "sw": 1.9463283308511858,
+        "yo": 1.884873714405653,
+        "am": 2.5423923035271305
+      },
+      "tokens": {
+        "en": 164621,
+        "fr": 172262,
+        "ha": 154823,
+        "sw": 135716,
+        "yo": 160643,
+        "am": 189599
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 228,
+      "lossy_rows": 23986,
+      "raw_scored": 1.9819763213431336,
+      "guardrail_budget": 2.2792727695446033,
+      "guardrail_breaches": [],
+      "guardrail_pass": true
+    },
+    {
+      "name": "b1-baseline",
+      "note": "référence : BPE+NFC+Whitespace, mf=2 (doit redonner ~2.0600)",
+      "config": {
+        "name": "b1-baseline",
+        "model": "bpe",
+        "pre": "whitespace",
+        "min_freq": 2,
+        "alphabet": false,
+        "boost": {},
+        "note": "référence : BPE+NFC+Whitespace, mf=2 (doit redonner ~2.0600)"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 17.078035354614258,
+      "score": 2.059977421976358,
+      "fertility": {
+        "en": 1.8892606449716849,
+        "fr": 1.9888695230110753,
+        "ha": 1.7252140415724957,
+        "sw": 1.9108431664566388,
+        "yo": 1.8855383754285315,
+        "am": 2.489882009242819
+      },
+      "unk_rate": {
+        "en": 5.6516972046705625e-05,
+        "fr": 0.00069496536204386,
+        "ha": 0.00047874057827408456,
+        "sw": 2.8640164967350212e-05,
+        "yo": 0.00013992863639543832,
+        "am": 0.0016370115724125773
+      },
+      "penalised": {
+        "en": 1.8949123421763554,
+        "fr": 2.0583660592154613,
+        "ha": 1.773088099399904,
+        "sw": 1.9137071829533738,
+        "yo": 1.8995312390680754,
+        "am": 2.653583166484077
+      },
+      "tokens": {
+        "en": 167141,
+        "fr": 180295,
+        "ha": 154957,
+        "sw": 133438,
+        "yo": 161700,
+        "am": 197729
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 255,
+      "lossy_rows": 23987,
+      "raw_scored": 2.0028693981751213,
+      "guardrail_budget": 2.3032998079013893,
+      "guardrail_breaches": [],
+      "guardrail_pass": true
+    },
+    {
+      "name": "c5-bytelevel",
+      "note": "ByteLevel(use_regex) : round-trip sans perte, zero UNK",
+      "config": {
+        "name": "c5-bytelevel",
+        "model": "bpe",
+        "pre": "byte_level",
+        "min_freq": 2,
+        "alphabet": "bytes",
+        "boost": {},
+        "note": "ByteLevel(use_regex) : round-trip sans perte, zero UNK"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 29.03248143196106,
+      "score": 2.082581950032966,
+      "fertility": {
+        "en": 1.8889215431394049,
+        "fr": 2.0096853902837224,
+        "ha": 1.7503089546755142,
+        "sw": 1.9431063122923589,
+        "yo": 2.0778353039949624,
+        "am": 2.5590772291690276
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.8889215431394049,
+        "fr": 2.0096853902837224,
+        "ha": 1.7503089546755142,
+        "sw": 1.9431063122923589,
+        "yo": 2.0778353039949624,
+        "am": 2.5590772291690276
+      },
+      "tokens": {
+        "en": 167111,
+        "fr": 182182,
+        "ha": 157211,
+        "sw": 135691,
+        "yo": 178191,
+        "am": 203224
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 0,
+      "raw_scored": 2.082581950032966,
+      "guardrail_budget": 2.3949692425379108,
+      "guardrail_breaches": [],
+      "guardrail_pass": true
+    }
+  ],
+  "best": {
+    "name": "c8-scoredboost",
+    "score": 1.9799340002587336,
+    "config": {
+      "name": "c8-scoredboost",
+      "model": "bpe",
+      "pre": "whitespace_split",
+      "min_freq": 5,
+      "alphabet": true,
+      "boost": {
+        "ha": 2,
+        "sw": 2,
+        "yo": 2,
+        "am": 2
+      },
+      "note": "sur-echantillonnage des 4 langues notees (teste la limite du guardrail)"
+    },
+    "guardrail_pass": true,
+    "model_path": "/content/models/optimized_c8-scoredboost/tokenizer.json"
+  },
+  "environment": {
+    "tokenizers": "0.22.1",
+    "timestamp_utc": "2026-09-10T01:27:52Z"
+  }
+}
