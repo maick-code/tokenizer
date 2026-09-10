@@ -1,0 +1,7 @@
+team: Maick Dane Nkou
+members:
+- Maick Dane Nkou
+affiliation: AIMS SOUTH AFRICA
+approach: 'BPE 10k (c8-scoredboost): NFC, WhitespaceSplit pre-tokenization, trained
+  only on the official train split with am/ha/sw/yo oversampled x2. Validation score
+  1.9799 (baseline BPE 10k 2.0600); EN/FR guardrail PASS.'

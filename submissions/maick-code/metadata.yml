@@ -1,7 +1,0 @@
-team: Maick Dane NKOU
-members:
-- Maick
-affiliation: AIMS SOUTH AFRICA
-approach: 'BPE/Unigram tokenizer (c8-scoredboost) trained on the official competition
-  train split only. Official validation score 1.9799 (baseline BPE 10k: 2.0600). English/French
-  guardrail PASS.'
