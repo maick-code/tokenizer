@@ -1,0 +1,1293 @@
+{
+  "audit": "c8-scoredboost",
+  "generated_at_utc": "2026-09-10T01:56:08Z",
+  "scope": "Analyse uniquement : aucune nouvelle expérience, aucun entraînement, aucune modification des notebooks ou des modèles.",
+  "read_only_guarantee": "Aucun fichier existant, notebook, modèle ou tokenizer n'a été modifié ; aucune expérience n'a été lancée. Seuls reports/c8_audit.md et reports/c8_audit.json ont été créés.",
+  "data_sources": {
+    "submission_tokenizer": "submissions/maick-code/tokenizer.json (sha256 3c6ff5baa8e0a67c75c0d3c3d539cb1ca0f53b0e04032a4348b59e5664015985)",
+    "optimized_model": "models/optimized_c8-scoredboost/tokenizer.json (sha256 3c6ff5baa8e0a67c75c0d3c3d539cb1ca0f53b0e04032a4348b59e5664015985)",
+    "identical_files_sha256": true,
+    "files_read": [
+      "reports/optimization_sweep.json",
+      "reports/baseline_bpe_10k.json",
+      "submissions/maick-code/tokenizer.json",
+      "models/optimized_c8-scoredboost/tokenizer.json",
+      "models/baseline_bpe_10k/tokenizer.json"
+    ],
+    "per_language_measurements": "reports/optimization_sweep.json — mesuré dans Colab sur le split validation officiel (24 000 lignes) avec la métrique officielle",
+    "baseline_per_language": "reports/baseline_bpe_10k.json",
+    "metric_equivalence": "reports/official_check_baseline.json (test différentiel : identique bit à bit au code officiel du challenge)",
+    "limitation": "Arena n'a pas d'accès réseau à Hugging Face : la ré-évaluation locale sur le dataset officiel complet n'est pas possible ici ; les chiffres par langue proviennent du run Colab sur ce même split.",
+    "environment": {
+      "tokenizers": "0.22.1",
+      "timestamp_utc": "2026-09-10T01:27:52Z"
+    }
+  },
+  "1_tokenizer_inventory": {
+    "model_type": "BPE",
+    "vocab_size": 10000,
+    "vocab_entries": 10000,
+    "merges": 6955,
+    "merges_format": "liste de paires (list[str, str])",
+    "unk_token": "[UNK]",
+    "unk_id": null,
+    "special_tokens": [
+      "[UNK]"
+    ],
+    "added_tokens": [
+      {
+        "id": 0,
+        "content": "[UNK]",
+        "single_word": false,
+        "lstrip": false,
+        "rstrip": false,
+        "normalized": false,
+        "special": true
+      }
+    ],
+    "byte_fallback": false,
+    "normalizer": {
+      "type": "NFC"
+    },
+    "pre_tokenizer": {
+      "type": "WhitespaceSplit"
+    },
+    "post_processor": null,
+    "decoder": null,
+    "truncation": null,
+    "padding": null
+  },
+  "2_configuration": {
+    "name": "c8-scoredboost",
+    "source": "notebooks/02_optimization_sweep.ipynb (liste CONFIGS + build_tokenizer + corpus_iterator)",
+    "base_tokenizer": "tokenizers.Tokenizer(BPE(unk_token=\"[UNK]\"))",
+    "normalization": "NFC() — aucune conversion ASCII, aucun StripAccents, aucun lowercase",
+    "pre_tokenization": "WhitespaceSplit() — pontuation collée au mot (pas de token de ponctuation isolé)",
+    "vocab_size": 10000,
+    "min_frequency": 5,
+    "min_frequency_effect": "aucun (mesuré : identical à 2 et 10)",
+    "initial_alphabet": "tous les caractères du train (hors espaces)",
+    "initial_alphabet_effect": "aucun (mesuré : identical sans lui)",
+    "training_strategy": "train_from_iterator sur dataset['train'] uniquement, tirage équilibré round-robin langue par langue",
+    "sampling": "boost = {ha: 2, sw: 2, yo: 2, am: 2} — chaque passage des 4 langues notées est fourni deux fois",
+    "effective_corpus": "400 000 passages fournis : 40 000 en + 40 000 fr + 80 000 x (ha, sw, yo, am)",
+    "scoring": "score officiel = moyenne sur ha, sw, yo, am de (fertility + 100 x unk_rate)",
+    "language_weighting": "les 4 langues notées pèsent 2x plus que en/fr pendant l'entraînement (ratio 2:1)",
+    "train_seconds_colab": 26.7
+  },
+  "3_baseline_vs_c8": [
+    {
+      "component": "model",
+      "baseline": "BPE",
+      "c8": "BPE",
+      "same": true
+    },
+    {
+      "component": "normalizer",
+      "baseline": "NFC",
+      "c8": "NFC",
+      "same": true
+    },
+    {
+      "component": "pre_tokenizer",
+      "baseline": "Whitespace",
+      "c8": "WhitespaceSplit",
+      "same": false
+    },
+    {
+      "component": "post_processor",
+      "baseline": null,
+      "c8": null,
+      "same": true
+    },
+    {
+      "component": "decoder",
+      "baseline": null,
+      "c8": null,
+      "same": true
+    },
+    {
+      "component": "vocab_size",
+      "baseline": 10000,
+      "c8": 10000,
+      "same": true
+    },
+    {
+      "component": "merges",
+      "baseline": 6955,
+      "c8": 6955,
+      "same": true
+    },
+    {
+      "component": "unk / special tokens",
+      "baseline": "[UNK] (id 0)",
+      "c8": "[UNK] (id 0)",
+      "same": true
+    },
+    {
+      "component": "min_frequency",
+      "baseline": 2,
+      "c8": 5,
+      "same": false,
+      "note": "sans effet mesurable"
+    },
+    {
+      "component": "initial_alphabet",
+      "baseline": null,
+      "c8": "tous les caractères du train",
+      "same": false,
+      "note": "sans effet mesurable"
+    },
+    {
+      "component": "language weighting",
+      "baseline": "1:1:1:1:1:1",
+      "c8": "scored 2x vs en/fr",
+      "same": false
+    },
+    {
+      "component": "corpus effectif",
+      "baseline": "240 000 passages",
+      "c8": "400 000 passages",
+      "same": false
+    },
+    {
+      "component": "vocab Ethiopic",
+      "baseline": 1610,
+      "c8": 1843,
+      "same": false
+    },
+    {
+      "component": "vocab Yoruba (diacritiques)",
+      "baseline": 249,
+      "c8": 283,
+      "same": false
+    },
+    {
+      "component": "vocab Hausa (crochets)",
+      "baseline": 35,
+      "c8": 36,
+      "same": false
+    }
+  ],
+  "4_per_language": {
+    "en": {
+      "words": 88469,
+      "tokens": 172544,
+      "fertility": 1.950333,
+      "unk": 5,
+      "unk_rate": 5.652e-05,
+      "score": 1.955985
+    },
+    "fr": {
+      "words": 90652,
+      "tokens": 183165,
+      "fertility": 2.020529,
+      "unk": 63,
+      "unk_rate": 0.00069497,
+      "score": 2.090026
+    },
+    "ha": {
+      "words": 89819,
+      "tokens": 148449,
+      "fertility": 1.652757,
+      "unk": 43,
+      "unk_rate": 0.00047874,
+      "score": 1.700631
+    },
+    "sw": {
+      "words": 69832,
+      "tokens": 129101,
+      "fertility": 1.848737,
+      "unk": 2,
+      "unk_rate": 2.864e-05,
+      "score": 1.851601
+    },
+    "yo": {
+      "words": 85758,
+      "tokens": 156887,
+      "fertility": 1.829415,
+      "unk": 12,
+      "unk_rate": 0.00013993,
+      "score": 1.843408
+    },
+    "am": {
+      "words": 79413,
+      "tokens": 187446,
+      "fertility": 2.360394,
+      "unk": 130,
+      "unk_rate": 0.00163701,
+      "score": 2.524096
+    }
+  },
+  "guardrails": {
+    "baseline": {
+      "raw_scored_mean_fertility": 2.002869,
+      "budget": 2.3033,
+      "budget_full_precision": 2.3032998079013893,
+      "budget_recomputed_from_rounded": 2.3033,
+      "en_fertility": 1.889261,
+      "fr_fertility": 1.98887,
+      "en_margin": 0.414,
+      "fr_margin": 0.3144,
+      "breaches": [],
+      "pass": true
+    },
+    "c8-scoredboost": {
+      "raw_scored_mean_fertility": 1.922826,
+      "budget": 2.2112,
+      "budget_full_precision": 2.2112498729261216,
+      "budget_recomputed_from_rounded": 2.21125,
+      "en_fertility": 1.950333,
+      "fr_fertility": 2.020529,
+      "en_margin": 0.2609,
+      "fr_margin": 0.1907,
+      "breaches": [],
+      "pass": true
+    }
+  },
+  "5_gains": {
+    "per_language": {
+      "en": {
+        "baseline": 1.894912,
+        "c8": 1.955985,
+        "delta": 0.061072,
+        "baseline_fertility": 1.889261,
+        "c8_fertility": 1.950333
+      },
+      "fr": {
+        "baseline": 2.058366,
+        "c8": 2.090026,
+        "delta": 0.03166,
+        "baseline_fertility": 1.98887,
+        "c8_fertility": 2.020529
+      },
+      "ha": {
+        "baseline": 1.773088,
+        "c8": 1.700631,
+        "delta": -0.072457,
+        "baseline_fertility": 1.725214,
+        "c8_fertility": 1.652757
+      },
+      "sw": {
+        "baseline": 1.913707,
+        "c8": 1.851601,
+        "delta": -0.062106,
+        "baseline_fertility": 1.910843,
+        "c8_fertility": 1.848737
+      },
+      "yo": {
+        "baseline": 1.899531,
+        "c8": 1.843408,
+        "delta": -0.056123,
+        "baseline_fertility": 1.885538,
+        "c8_fertility": 1.829415
+      },
+      "am": {
+        "baseline": 2.653583,
+        "c8": 2.524096,
+        "delta": -0.129488,
+        "baseline_fertility": 2.489882,
+        "c8_fertility": 2.360394
+      }
+    },
+    "score_baseline": 2.059977,
+    "score_c8": 1.979934,
+    "total_gain": 0.080043,
+    "total_gain_percent": 3.89,
+    "best_language": "Amharic (-0.1295)",
+    "worst_language": "Yoruba (-0.0561, moindre progression parmi les langues notees)",
+    "most_expensive_language": "Amharic (2.5241, mais plus gros gain en absolu)",
+    "regressions": {
+      "English": 0.061072,
+      "French": 0.03166
+    },
+    "contributions": {
+      "ha": {
+        "delta_language": 0.072457,
+        "delta_score": 0.018114,
+        "share_of_total_gain": 22.63
+      },
+      "sw": {
+        "delta_language": 0.062106,
+        "delta_score": 0.015527,
+        "share_of_total_gain": 19.4
+      },
+      "yo": {
+        "delta_language": 0.056123,
+        "delta_score": 0.014031,
+        "share_of_total_gain": 17.53
+      },
+      "am": {
+        "delta_language": 0.129488,
+        "delta_score": 0.032372,
+        "share_of_total_gain": 40.44
+      }
+    }
+  },
+  "6_vocabulary": {
+    "c8": {
+      "total": 10000,
+      "len1": 3044,
+      "len2": 1766,
+      "len3": 1937,
+      "len4plus": 3252,
+      "max_length": 13,
+      "mean_length": 2.893,
+      "ascii_tokens": 4773,
+      "non_ascii_tokens": 5226,
+      "ethiopic_tokens": 1843,
+      "yoruba_tokens": 283,
+      "combining_tokens": 176,
+      "hausa_hook_tokens": 36
+    },
+    "baseline": {
+      "total": 10000,
+      "len1": 3044,
+      "len2": 1564,
+      "len3": 1852,
+      "len4plus": 3539,
+      "max_length": 13,
+      "mean_length": 2.9957,
+      "ascii_tokens": 5014,
+      "non_ascii_tokens": 4985,
+      "ethiopic_tokens": 1610,
+      "yoruba_tokens": 249,
+      "combining_tokens": 155,
+      "hausa_hook_tokens": 35
+    },
+    "deltas": {
+      "len1": 0,
+      "len2": 202,
+      "len3": 85,
+      "len4plus": -287,
+      "max_length": 0,
+      "mean_length": -0.10270000000000001,
+      "ascii_tokens": -241,
+      "non_ascii_tokens": 241,
+      "ethiopic_tokens": 233,
+      "yoruba_tokens": 34,
+      "combining_tokens": 21,
+      "hausa_hook_tokens": 1
+    },
+    "word_plus_punctuation": {
+      "c8": {
+        "merges_word_plus_punct": 529,
+        "vocab_tokens_word_plus_punct": 530,
+        "examples": [
+          "ነው።",
+          "ል።",
+          "l'",
+          "s,",
+          "d'",
+          "s.",
+          "a.",
+          "a,"
+        ]
+      },
+      "baseline": {
+        "merges_word_plus_punct": 0,
+        "vocab_tokens_word_plus_punct": 1,
+        "examples": []
+      }
+    },
+    "examples_long_tokens": [
+      "Waliozaliwa",
+      "Waliofariki",
+      "orílẹ̀-èdè",
+      "University",
+      "mbalimbali",
+      "International",
+      "ástẹ́rọ́ìdì",
+      "makarantar",
+      "ástẹ́rọ́ìdì.",
+      "Kiingereza",
+      "population",
+      "département"
+    ],
+    "examples_long_tokens_baseline": [
+      "Waliozaliwa",
+      "Waliofariki",
+      "University",
+      "département",
+      "International",
+      "population",
+      "mbalimbali",
+      "ástẹ́rọ́ìdì",
+      "makarantar",
+      "production",
+      "Kiingereza",
+      "international"
+    ]
+  },
+  "7_merges": {
+    "count": 6955,
+    "count_baseline": 6955,
+    "shared": 5450,
+    "only_c8": 1505,
+    "only_baseline": 1505,
+    "allocation_c8": {
+      "Latin ASCII (en/sw/fr sans accent)": 4679,
+      "Yoruba (diacritiques)": 252,
+      "Latin précomposé (fr + tons yoruba)": 480,
+      "Amharic (Ge'ez)": 1506,
+      "Hausa (crochets)": 30,
+      "Autres scripts": 8
+    },
+    "allocation_baseline": {
+      "Latin ASCII (en/sw/fr sans accent)": 4920,
+      "Yoruba (diacritiques)": 218,
+      "Latin précomposé (fr + tons yoruba)": 513,
+      "Amharic (Ge'ez)": 1273,
+      "Hausa (crochets)": 29,
+      "Autres scripts": 2
+    },
+    "first_rank_c8": {
+      "Latin ASCII (en/sw/fr sans accent)": 1,
+      "Yoruba (diacritiques)": 46,
+      "Latin précomposé (fr + tons yoruba)": 67,
+      "Amharic (Ge'ez)": 95,
+      "Hausa (crochets)": 655,
+      "Autres scripts": 1213
+    },
+    "first_rank_baseline": {
+      "Latin ASCII (en/sw/fr sans accent)": 1,
+      "Yoruba (diacritiques)": 63,
+      "Latin précomposé (fr + tons yoruba)": 87,
+      "Amharic (Ge'ez)": 120,
+      "Hausa (crochets)": 780,
+      "Autres scripts": 3871
+    },
+    "gained_by_group": {
+      "Latin ASCII (en/sw/fr sans accent)": 1123,
+      "Yoruba (diacritiques)": 37,
+      "Latin précomposé (fr + tons yoruba)": 70,
+      "Autres scripts": 6,
+      "Amharic (Ge'ez)": 267,
+      "Hausa (crochets)": 2
+    },
+    "lost_by_group": {
+      "Latin ASCII (en/sw/fr sans accent)": 1364,
+      "Latin précomposé (fr + tons yoruba)": 103,
+      "Hausa (crochets)": 1,
+      "Amharic (Ge'ez)": 34,
+      "Yoruba (diacritiques)": 3
+    },
+    "examples": {
+      "amharic": [
+        {
+          "merge": "እ + ን",
+          "token": "እን",
+          "rank_c8": 95,
+          "rank_baseline": 120,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "ነ + ው",
+          "token": "ነው",
+          "rank_c8": 100,
+          "rank_baseline": 128,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "ነው + ።",
+          "token": "ነው።",
+          "rank_c8": 135,
+          "rank_baseline": null,
+          "in_baseline_vocab": false
+        },
+        {
+          "merge": "የ + ሚ",
+          "token": "የሚ",
+          "rank_c8": 154,
+          "rank_baseline": 190,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "ቸ + ው",
+          "token": "ቸው",
+          "rank_c8": 156,
+          "rank_baseline": 191,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "የ + አ",
+          "token": "የአ",
+          "rank_c8": 162,
+          "rank_baseline": 195,
+          "in_baseline_vocab": true
+        }
+      ],
+      "yoruba": [
+        {
+          "merge": "ẹ + ̀",
+          "token": "ẹ̀",
+          "rank_c8": 46,
+          "rank_baseline": 63,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "w + ọ",
+          "token": "wọ",
+          "rank_c8": 53,
+          "rank_baseline": 68,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "ẹ + ́",
+          "token": "ẹ́",
+          "rank_c8": 55,
+          "rank_baseline": 74,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "ọ + ́",
+          "token": "ọ́",
+          "rank_c8": 78,
+          "rank_baseline": 96,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "wọ + n",
+          "token": "wọn",
+          "rank_c8": 79,
+          "rank_baseline": 97,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "ọ + ̀",
+          "token": "ọ̀",
+          "rank_c8": 98,
+          "rank_baseline": 126,
+          "in_baseline_vocab": true
+        }
+      ],
+      "hausa": [
+        {
+          "merge": "ƙ + asar",
+          "token": "ƙasar",
+          "rank_c8": 655,
+          "rank_baseline": 780,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "ƙ + a",
+          "token": "ƙa",
+          "rank_c8": 868,
+          "rank_baseline": 1056,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "ɗ + an",
+          "token": "ɗan",
+          "rank_c8": 918,
+          "rank_baseline": 1209,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "ƙ + wa",
+          "token": "ƙwa",
+          "rank_c8": 1019,
+          "rank_baseline": 1186,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "ɗ + a",
+          "token": "ɗa",
+          "rank_c8": 1030,
+          "rank_baseline": 1168,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "ƙwa + llon",
+          "token": "ƙwallon",
+          "rank_c8": 1202,
+          "rank_baseline": 1403,
+          "in_baseline_vocab": true
+        }
+      ],
+      "latin_ascii": [
+        {
+          "merge": "a + n",
+          "token": "an",
+          "rank_c8": 1,
+          "rank_baseline": 1,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "a + r",
+          "token": "ar",
+          "rank_c8": 2,
+          "rank_baseline": 3,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "i + n",
+          "token": "in",
+          "rank_c8": 3,
+          "rank_baseline": 2,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "w + a",
+          "token": "wa",
+          "rank_c8": 4,
+          "rank_baseline": 8,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "o + n",
+          "token": "on",
+          "rank_c8": 5,
+          "rank_baseline": 4,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "e + r",
+          "token": "er",
+          "rank_c8": 6,
+          "rank_baseline": 7,
+          "in_baseline_vocab": true
+        }
+      ],
+      "latin_precomposed": [
+        {
+          "merge": "n + í",
+          "token": "ní",
+          "rank_c8": 67,
+          "rank_baseline": 87,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "t + í",
+          "token": "tí",
+          "rank_c8": 97,
+          "rank_baseline": 124,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "ú + n",
+          "token": "ún",
+          "rank_c8": 105,
+          "rank_baseline": 138,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "r + í",
+          "token": "rí",
+          "rank_c8": 151,
+          "rank_baseline": 189,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "r + é",
+          "token": "ré",
+          "rank_c8": 161,
+          "rank_baseline": 117,
+          "in_baseline_vocab": true
+        },
+        {
+          "merge": "s + í",
+          "token": "sí",
+          "rank_c8": 168,
+          "rank_baseline": 200,
+          "in_baseline_vocab": true
+        }
+      ]
+    }
+  },
+  "8_unk_root_cause": {
+    "total_unk_tokens": 255,
+    "per_language": {
+      "en": 5,
+      "fr": 63,
+      "ha": 43,
+      "sw": 2,
+      "yo": 12,
+      "am": 130
+    },
+    "sampled_rows_analysed": 23,
+    "sampled_absent_chars_distinct": 52,
+    "sampled_absent_chars": [
+      {
+        "char": "ﻭ",
+        "codepoint": "U+FEED",
+        "name": "ARABIC LETTER WAW ISOLATED FORM",
+        "family": "Formes de présentation arabes",
+        "occurrences": 3
+      },
+      {
+        "char": "ﻛ",
+        "codepoint": "U+FEDB",
+        "name": "ARABIC LETTER KAF INITIAL FORM",
+        "family": "Formes de présentation arabes",
+        "occurrences": 3
+      },
+      {
+        "char": "算",
+        "codepoint": "U+7B97",
+        "name": "CJK UNIFIED IDEOGRAPH-7B97",
+        "family": "CJK / kana",
+        "occurrences": 2
+      },
+      {
+        "char": "刀",
+        "codepoint": "U+5200",
+        "name": "CJK UNIFIED IDEOGRAPH-5200",
+        "family": "CJK / kana",
+        "occurrences": 2
+      },
+      {
+        "char": "정",
+        "codepoint": "U+C815",
+        "name": "HANGUL SYLLABLE JEONG",
+        "family": "Hangul",
+        "occurrences": 2
+      },
+      {
+        "char": "왕",
+        "codepoint": "U+C655",
+        "name": "HANGUL SYLLABLE WANG",
+        "family": "Hangul",
+        "occurrences": 2
+      },
+      {
+        "char": "후",
+        "codepoint": "U+D6C4",
+        "name": "HANGUL SYLLABLE HU",
+        "family": "Hangul",
+        "occurrences": 2
+      },
+      {
+        "char": "씨",
+        "codepoint": "U+C528",
+        "name": "HANGUL SYLLABLE SSI",
+        "family": "Hangul",
+        "occurrences": 2
+      },
+      {
+        "char": "ﺬ",
+        "codepoint": "U+FEAC",
+        "name": "ARABIC LETTER THAL FINAL FORM",
+        "family": "Formes de présentation arabes",
+        "occurrences": 2
+      },
+      {
+        "char": "ﻪ",
+        "codepoint": "U+FEEA",
+        "name": "ARABIC LETTER HEH FINAL FORM",
+        "family": "Formes de présentation arabes",
+        "occurrences": 2
+      },
+      {
+        "char": "ﺃ",
+        "codepoint": "U+FE83",
+        "name": "ARABIC LETTER ALEF WITH HAMZA ABOVE ISOLATED FORM",
+        "family": "Formes de présentation arabes",
+        "occurrences": 2
+      },
+      {
+        "char": "Ș",
+        "codepoint": "U+0218",
+        "name": "LATIN CAPITAL LETTER S WITH COMMA BELOW",
+        "family": "Autre (emoji, vieil italique, latin rare…)",
+        "occurrences": 1
+      },
+      {
+        "char": "盤",
+        "codepoint": "U+76E4",
+        "name": "CJK UNIFIED IDEOGRAPH-76E4",
+        "family": "CJK / kana",
+        "occurrences": 1
+      },
+      {
+        "char": "盘",
+        "codepoint": "U+76D8",
+        "name": "CJK UNIFIED IDEOGRAPH-76D8",
+        "family": "CJK / kana",
+        "occurrences": 1
+      },
+      {
+        "char": "ぁ",
+        "codepoint": "U+3041",
+        "name": "HIRAGANA LETTER SMALL A",
+        "family": "CJK / kana",
+        "occurrences": 1
+      },
+      {
+        "char": "ぃ",
+        "codepoint": "U+3043",
+        "name": "HIRAGANA LETTER SMALL I",
+        "family": "CJK / kana",
+        "occurrences": 1
+      },
+      {
+        "char": "ぅ",
+        "codepoint": "U+3045",
+        "name": "HIRAGANA LETTER SMALL U",
+        "family": "CJK / kana",
+        "occurrences": 1
+      },
+      {
+        "char": "ぇ",
+        "codepoint": "U+3047",
+        "name": "HIRAGANA LETTER SMALL E",
+        "family": "CJK / kana",
+        "occurrences": 1
+      },
+      {
+        "char": "ぉ",
+        "codepoint": "U+3049",
+        "name": "HIRAGANA LETTER SMALL O",
+        "family": "CJK / kana",
+        "occurrences": 1
+      },
+      {
+        "char": "ゃ",
+        "codepoint": "U+3083",
+        "name": "HIRAGANA LETTER SMALL YA",
+        "family": "CJK / kana",
+        "occurrences": 1
+      },
+      {
+        "char": "ゅ",
+        "codepoint": "U+3085",
+        "name": "HIRAGANA LETTER SMALL YU",
+        "family": "CJK / kana",
+        "occurrences": 1
+      },
+      {
+        "char": "振",
+        "codepoint": "U+632F",
+        "name": "CJK UNIFIED IDEOGRAPH-632F",
+        "family": "CJK / kana",
+        "occurrences": 1
+      },
+      {
+        "char": "里",
+        "codepoint": "U+91CC",
+        "name": "CJK UNIFIED IDEOGRAPH-91CC",
+        "family": "CJK / kana",
+        "occurrences": 1
+      },
+      {
+        "char": "禅",
+        "codepoint": "U+7985",
+        "name": "CJK UNIFIED IDEOGRAPH-7985",
+        "family": "CJK / kana",
+        "occurrences": 1
+      },
+      {
+        "char": "寺",
+        "codepoint": "U+5BFA",
+        "name": "CJK UNIFIED IDEOGRAPH-5BFA",
+        "family": "CJK / kana",
+        "occurrences": 1
+      },
+      {
+        "char": "🔥",
+        "codepoint": "U+1F525",
+        "name": "FIRE",
+        "family": "Autre (emoji, vieil italique, latin rare…)",
+        "occurrences": 1
+      },
+      {
+        "char": "Ə",
+        "codepoint": "U+018F",
+        "name": "LATIN CAPITAL LETTER SCHWA",
+        "family": "Autre (emoji, vieil italique, latin rare…)",
+        "occurrences": 1
+      },
+      {
+        "char": "ܦ",
+        "codepoint": "U+0726",
+        "name": "SYRIAC LETTER PE",
+        "family": "Syriaque",
+        "occurrences": 1
+      },
+      {
+        "char": "ܬ",
+        "codepoint": "U+072C",
+        "name": "SYRIAC LETTER TAW",
+        "family": "Syriaque",
+        "occurrences": 1
+      },
+      {
+        "char": "Ţ",
+        "codepoint": "U+0162",
+        "name": "LATIN CAPITAL LETTER T WITH CEDILLA",
+        "family": "Autre (emoji, vieil italique, latin rare…)",
+        "occurrences": 1
+      },
+      {
+        "char": "எ",
+        "codepoint": "U+0B8E",
+        "name": "TAMIL LETTER E",
+        "family": "Indien (tamoul / bengali / malayalam)",
+        "occurrences": 1
+      },
+      {
+        "char": "இ",
+        "codepoint": "U+0B87",
+        "name": "TAMIL LETTER I",
+        "family": "Indien (tamoul / bengali / malayalam)",
+        "occurrences": 1
+      },
+      {
+        "char": "ড",
+        "codepoint": "U+09A1",
+        "name": "BENGALI LETTER DDA",
+        "family": "Indien (tamoul / bengali / malayalam)",
+        "occurrences": 1
+      },
+      {
+        "char": "ഷ",
+        "codepoint": "U+0D37",
+        "name": "MALAYALAM LETTER SSA",
+        "family": "Indien (tamoul / bengali / malayalam)",
+        "occurrences": 1
+      },
+      {
+        "char": "Ү",
+        "codepoint": "U+04AE",
+        "name": "CYRILLIC CAPITAL LETTER STRAIGHT U",
+        "family": "Cyrillique",
+        "occurrences": 1
+      },
+      {
+        "char": "̂",
+        "codepoint": "U+0302",
+        "name": "COMBINING CIRCUMFLEX ACCENT",
+        "family": "Autre (emoji, vieil italique, latin rare…)",
+        "occurrences": 1
+      },
+      {
+        "char": "𐌆",
+        "codepoint": "U+10306",
+        "name": "OLD ITALIC LETTER ZE",
+        "family": "Autre (emoji, vieil italique, latin rare…)",
+        "occurrences": 1
+      },
+      {
+        "char": "禹",
+        "codepoint": "U+79B9",
+        "name": "CJK UNIFIED IDEOGRAPH-79B9",
+        "family": "CJK / kana",
+        "occurrences": 1
+      },
+      {
+        "char": "ѣ",
+        "codepoint": "U+0463",
+        "name": "CYRILLIC SMALL LETTER YAT",
+        "family": "Cyrillique",
+        "occurrences": 1
+      },
+      {
+        "char": "ﻦ",
+        "codepoint": "U+FEE6",
+        "name": "ARABIC LETTER NOON FINAL FORM",
+        "family": "Formes de présentation arabes",
+        "occurrences": 1
+      },
+      {
+        "char": "ﺜ",
+        "codepoint": "U+FE9C",
+        "name": "ARABIC LETTER THEH MEDIAL FORM",
+        "family": "Formes de présentation arabes",
+        "occurrences": 1
+      },
+      {
+        "char": "ﺕ",
+        "codepoint": "U+FE95",
+        "name": "ARABIC LETTER TEH ISOLATED FORM",
+        "family": "Formes de présentation arabes",
+        "occurrences": 1
+      },
+      {
+        "char": "ﺪ",
+        "codepoint": "U+FEAA",
+        "name": "ARABIC LETTER DAL FINAL FORM",
+        "family": "Formes de présentation arabes",
+        "occurrences": 1
+      },
+      {
+        "char": "ﻢ",
+        "codepoint": "U+FEE2",
+        "name": "ARABIC LETTER MEEM FINAL FORM",
+        "family": "Formes de présentation arabes",
+        "occurrences": 1
+      },
+      {
+        "char": "ﻣ",
+        "codepoint": "U+FEE3",
+        "name": "ARABIC LETTER MEEM INITIAL FORM",
+        "family": "Formes de présentation arabes",
+        "occurrences": 1
+      },
+      {
+        "char": "ﻐ",
+        "codepoint": "U+FED0",
+        "name": "ARABIC LETTER GHAIN MEDIAL FORM",
+        "family": "Formes de présentation arabes",
+        "occurrences": 1
+      },
+      {
+        "char": "ﻔ",
+        "codepoint": "U+FED4",
+        "name": "ARABIC LETTER FEH MEDIAL FORM",
+        "family": "Formes de présentation arabes",
+        "occurrences": 1
+      },
+      {
+        "char": "ﺓ",
+        "codepoint": "U+FE93",
+        "name": "ARABIC LETTER TEH MARBUTA ISOLATED FORM",
+        "family": "Formes de présentation arabes",
+        "occurrences": 1
+      },
+      {
+        "char": "ﺟ",
+        "codepoint": "U+FE9F",
+        "name": "ARABIC LETTER JEEM INITIAL FORM",
+        "family": "Formes de présentation arabes",
+        "occurrences": 1
+      },
+      {
+        "char": "ﻈ",
+        "codepoint": "U+FEC8",
+        "name": "ARABIC LETTER ZAH MEDIAL FORM",
+        "family": "Formes de présentation arabes",
+        "occurrences": 1
+      },
+      {
+        "char": "百",
+        "codepoint": "U+767E",
+        "name": "CJK UNIFIED IDEOGRAPH-767E",
+        "family": "CJK / kana",
+        "occurrences": 1
+      },
+      {
+        "char": "越",
+        "codepoint": "U+8D8A",
+        "name": "CJK UNIFIED IDEOGRAPH-8D8A",
+        "family": "CJK / kana",
+        "occurrences": 1
+      }
+    ],
+    "absent_chars_by_validation_language": {
+      "English": {
+        "Ș": 1,
+        "算": 2,
+        "盤": 1,
+        "盘": 1
+      },
+      "French": {
+        "ぁ": 1,
+        "ぃ": 1,
+        "ぅ": 1,
+        "ぇ": 1,
+        "ぉ": 1,
+        "ゃ": 1,
+        "ゅ": 1,
+        "振": 1,
+        "刀": 2,
+        "里": 1,
+        "禅": 1,
+        "寺": 1
+      },
+      "Hausa": {
+        "🔥": 1,
+        "Ə": 1,
+        "정": 2,
+        "왕": 2,
+        "후": 2,
+        "씨": 2
+      },
+      "Swahili": {
+        "ܦ": 1,
+        "ܬ": 1
+      },
+      "Yoruba": {
+        "Ţ": 1,
+        "எ": 1,
+        "இ": 1,
+        "ড": 1,
+        "ഷ": 1,
+        "Ү": 1,
+        "̂": 1
+      },
+      "Amharic": {
+        "𐌆": 1,
+        "禹": 1,
+        "ѣ": 1,
+        "ﻭ": 3,
+        "ﺬ": 2,
+        "ﻛ": 3,
+        "ﻦ": 1,
+        "ﻪ": 2,
+        "ﺜ": 1,
+        "ﺕ": 1,
+        "ﺃ": 2,
+        "ﺪ": 1,
+        "ﻢ": 1,
+        "ﻣ": 1,
+        "ﻐ": 1,
+        "ﻔ": 1,
+        "ﺓ": 1,
+        "ﺟ": 1,
+        "ﻈ": 1,
+        "百": 1,
+        "越": 1
+      }
+    },
+    "families": {
+      "Autre (emoji, vieil italique, latin rare…)": 6,
+      "CJK / kana": 18,
+      "Hangul": 4,
+      "Syriaque": 2,
+      "Indien (tamoul / bengali / malayalam)": 4,
+      "Cyrillique": 2,
+      "Formes de présentation arabes": 16
+    },
+    "african_letters_in_absent_chars": [],
+    "african_letters_per_language": {
+      "English": [],
+      "French": [],
+      "Hausa": [],
+      "Swahili": [],
+      "Yoruba": [],
+      "Amharic": []
+    },
+    "borderline_combining_marks": [
+      {
+        "char": "̂",
+        "codepoint": "U+0302",
+        "name": "COMBINING CIRCUMFLEX ACCENT"
+      }
+    ],
+    "conclusion": "Aucune lettre yoruba, hausa ou éthiopienne n'est en cause : les [UNK] viennent de résidus multilingues de Wikipédia absents du train (formes de présentation arabes, CJK/kana, hangul, cyrillique, tamoul, syriaque, emoji, latin rare). Ces caractères n'apparaissent jamais dans le corpus d'entraînement, donc ni min_frequency ni initial_alphabet ne peuvent les couvrir.",
+    "penalty_points_in_score": 0.057108,
+    "penalty_share_of_score_percent": 2.88,
+    "byte_fallback_bound": {
+      "removed_penalty": 0.057108,
+      "scored_unk_tokens": {
+        "ha": 43,
+        "sw": 2,
+        "yo": 12,
+        "am": 130
+      },
+      "scored_words": 324822,
+      "assumption": "1 [UNK] remplacé par au plus 4 tokens byte (UTF-8 = 4 octets max)",
+      "worst_case_extra_tokens": 561,
+      "worst_case_extra_fertility": 0.001727,
+      "guaranteed_net_gain_at_least": 0.055381,
+      "target_score_upper_bound": 1.924553,
+      "caveat": "coût non inclus : les tokens byte occupent des places de vocabulaire (autant de merges en moins) ; à mesurer, et byte_fallback ne s'applique qu'à l'apprentissage et à l'encodage du modèle BPE."
+    }
+  },
+  "12_submission_state": {
+    "published_folder": "submissions/maick-code/ (branche arena/01a0889d-tokenizer, commit a896e17)",
+    "files_published": [
+      "tokenizer.json (516 915 o)",
+      "metadata.yml (271 o)",
+      "README.md (378 o)"
+    ],
+    "tokenizer_identical_to_best_model_sha256": "3c6ff5baa8e0a67c75c0d3c3d539cb1ca0f53b0e04032a4348b59e5664015985",
+    "metadata": {
+      "team": "Maick Dane NKOU",
+      "members": [
+        "Maick"
+      ],
+      "affiliation": "AIMS SOUTH AFRICA"
+    },
+    "findings_to_fix_before_deadline": [
+      "Le dossier publie est `maick-code` mais la cellule 10 du notebook 02 definit SLUG = \"maick-dane-nkou\" : si la cellule 10 est relancee telle quelle, un second dossier de soumission apparaitra (deux dossiers = PR probablement invalide). Aligner l'un sur l'autre avant de relancer.",
+      "`notebook.ipynb` est absent de submissions/maick-code/ : le format le declare optionnel, mais il est exige avant la date limite.",
+      "`approach` annonce « BPE/Unigram » alors que c8-scoredboost est un BPE pur (Unigram a ete teste et a perdu : +0.0111). A corriger pour exactitude."
+    ],
+    "no_change_made": "Aucun de ces points n'a ete modifie : l'audit est en lecture seule."
+  },
+  "9_known_property": {
+    "lossy_rows_c8": 23949,
+    "lossy_rows_baseline": 23987,
+    "rows_total": 24000,
+    "explanation": "Whitespace/WhitespaceSplit suppriment les espaces : decode() ne restitue donc pas les espaces et le round-trip exact échoue pour presque toutes les lignes. C'est inhérent au pré-tokeniseur, identique pour le baseline, et le checker officiel l'accepte (une seule config, c5-bytelevel, est lossless — au prix de +0.0596 de fertility).",
+    "official_verdict": "READY FOR SUBMISSION (valid=True, toutes les vérifications passées)"
+  },
+  "10_levers": [
+    {
+      "lever": "pre-tokenizer: Whitespace -> WhitespaceSplit",
+      "from": "b1-baseline",
+      "to": "c2-wssplit-mf2",
+      "score_from": 2.059977,
+      "score_to": 2.022937,
+      "delta": -0.03704
+    },
+    {
+      "lever": "min_frequency 2 -> 5 (c2 -> c3)",
+      "from": "c2-wssplit-mf2",
+      "to": "c3-wssplit-mf5",
+      "score_from": 2.022937,
+      "score_to": 2.022937,
+      "delta": 0.0
+    },
+    {
+      "lever": "min_frequency 5 -> 10 (c3 -> c4)",
+      "from": "c3-wssplit-mf5",
+      "to": "c4-wssplit-mf10-alpha",
+      "score_from": 2.022937,
+      "score_to": 2.022937,
+      "delta": 0.0
+    },
+    {
+      "lever": "initial_alphabet complet (c4, mf=10)",
+      "from": "c3-wssplit-mf5",
+      "to": "c4-wssplit-mf10-alpha",
+      "score_from": 2.022937,
+      "score_to": 2.022937,
+      "delta": 0.0
+    },
+    {
+      "lever": "boost des 4 langues notees x2 (c4 -> c8)",
+      "from": "c4-wssplit-mf10-alpha",
+      "to": "c8-scoredboost",
+      "score_from": 2.022937,
+      "score_to": 1.979934,
+      "delta": -0.043003
+    },
+    {
+      "lever": "boost amharique seul x2 (c4 -> c7)",
+      "from": "c4-wssplit-mf10-alpha",
+      "to": "c7-wssplit-mf10-alpha-amboost",
+      "score_from": 2.022937,
+      "score_to": 2.011568,
+      "delta": -0.011369
+    },
+    {
+      "lever": "modele Unigram au lieu de BPE (c4 -> c6)",
+      "from": "c4-wssplit-mf10-alpha",
+      "to": "c6-unigram-alpha",
+      "score_from": 2.022937,
+      "score_to": 2.034071,
+      "delta": 0.011134
+    },
+    {
+      "lever": "ByteLevel au lieu de WhitespaceSplit (c4 -> c5)",
+      "from": "c4-wssplit-mf10-alpha",
+      "to": "c5-bytelevel",
+      "score_from": 2.022937,
+      "score_to": 2.082582,
+      "delta": 0.059645
+    }
+  ],
+  "11_noop_findings": {
+    "c2_c3_c4_scores_identical": true,
+    "c2_c3_c4_fertility_identical": true,
+    "interpretation": "c2, c3 et c4 produisent des tokenizers strictement equivalents (scores et fertility identiques) : faire passer min_frequency de 2 a 10 n'elimine aucun merge retenu (aucun merge du modele final n'a une frequence < 10), et le parametre initial_alphabet n'ajoute rien car l'alphabet appris sur le train couvre deja tous les caracteres rencontres. Ces deux reglages sont donc des no-op sur ce corpus — ne pas les utiliser comme leviers."
+  },
+  "13_conclusion": {
+    "why_c8_better": "Deux leviers mesurés, indépendants : (1) pré-tokeniseur WhitespaceSplit, qui supprime les tokens de ponctuation isolés, et (2) le sur-échantillonnage des 4 langues notées, qui réalloue le vocabulaire vers le ge'ez, les diacritiques yoruba et les lettres à crochet hausa.",
+    "largest_modification": "boost des langues notées x2 (-0.0430, soit 54 % du gain), devant le pré-tokeniseur WhitespaceSplit (-0.0370, soit 46 %)",
+    "why_c8_better_short": "pre-tokenizer + reallocation du vocabulaire vers les langues notees ; aucun autre levier n'a d'effet mesurable",
+    "recommended_exp_004": "c9-bytefallback : c8 + BPE(byte_fallback=True) pour supprimer les 255 [UNK] ; borne mesurée : gain net garanti >= +0.0554, score <= 1.9246 (coût en tokens de vocabulaire à mesurer)."
+  }
+}
