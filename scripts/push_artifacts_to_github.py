@@ -1,28 +1,43 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Pousse les artefacts de la baseline BPE 10K vers GitHub.
+"""Publie les artefacts du challenge vers votre dépôt GitHub (méthode 2 : token).
 
-Utilisable depuis Google Colab (après avoir exécuté le notebook) OU en local.
+Le token est fourni par saisie **masquée** (recommandé), par variable
+d'environnement, ou par le secret Colab ``GITHUB_TOKEN``. Il n'est **jamais**
+affiché, jamais écrit sur disque, jamais commité : toutes les sorties passent par
+``redact()``.
 
-Le token GitHub n'est JAMAIS écrit dans le dépôt : il est lu depuis
-- le secret Colab ``GITHUB_TOKEN`` (Colab ▸ icône clé 🔑 ▸ Notebook access), ou
-- la variable d'environnement ``GITHUB_TOKEN``.
+Ce qui est publié (par défaut) :
+    models/**      tokenizer(s) entraîné(s)
+    reports/**     rapports JSON / Markdown
+    submissions/** (avec --include-submissions) dossier de soumission
 
 Exemples
 --------
-Colab (après le run du notebook) :
-    !python push_artifacts_to_github.py --source /content
+Colab (après avoir exécuté un notebook) :
+    !python scripts/push_artifacts_to_github.py --source /content
 
-Local (artefacts déjà présents dans le dépôt) :
-    GITHUB_TOKEN=xxx python push_artifacts_to_github.py --repo . --source .
+Colab, en incluant le dossier de soumission :
+    !python scripts/push_artifacts_to_github.py --source /content --include-submissions
 
-Sans token (n'effectue que copie + commit, et affiche la commande de push) :
-    python push_artifacts_to_github.py --repo /chemin/vers/tokenizer
+Local :
+    python scripts/push_artifacts_to_github.py --repo . --source .
+
+Vérifier sans rien publier :
+    python scripts/push_artifacts_to_github.py --source . --no-push
+
+Créer explicitement une branche inexistante :
+    python scripts/push_artifacts_to_github.py --source . --branch nouvelle-branche --create-branch
+
+Publier sur une autre branche / un autre dépôt :
+    python scripts/push_artifacts_to_github.py --source . --branch main \
+        --repo-url https://github.com/<user>/<repo>.git
 """
 
 from __future__ import annotations
 
 import argparse
+import getpass
 import os
 import shutil
 import subprocess
@@ -31,119 +46,341 @@ import zipfile
 from pathlib import Path
 
 DEFAULT_REPO_URL = "https://github.com/maick-code/tokenizer.git"
-DEFAULT_BRANCH = "arena/01a0889d-tokenizer"  # branche de travail (main reste intacte)
-CLONE_DIR = Path("/content/tokenizer")
+DEFAULT_BRANCH = "arena/01a0889d-tokenizer"   # branche de travail (main reste intacte)
+DEFAULT_MESSAGE = "Artifacts: tokenizer.json + reports (run Colab)"
+ARTIFACT_DIRS = ("models", "reports")
+EXCLUDE_DIR_NAMES = {"__pycache__", ".ipynb_checkpoints", ".git"}
+EXCLUDE_SUFFIXES = (".pyc", ".pyo", ".zip", ".tmp", ".log")
 
-# Chemins relatifs à la racine des artefacts (source), identiques dans le dépôt.
-ARTIFACTS = [
-    "models/baseline_bpe_10k/tokenizer.json",
-    "reports/baseline_bpe_10k.json",
-    "reports/baseline_bpe_10k.md",
-]
-COMMIT_MESSAGE = "Baseline BPE 10K: tokenizer.json + reports (Colab run)"
+EXIT_OK, EXIT_ERROR, EXIT_MISSING, EXIT_UNSAFE = 0, 1, 2, 3
 
 
-def get_token() -> str | None:
-    """Token depuis Colab Secrets ou l'environnement. Jamais journalisé."""
-    try:  # environnements Colab
+# --------------------------------------------------------------------------- #
+# Utilitaires
+# --------------------------------------------------------------------------- #
+def log(message: str = "") -> None:
+    print(message, flush=True)
+
+
+def die(message: str, code: int) -> "NoReturn":  # noqa: F821
+    log(f"\nERREUR : {message}")
+    raise SystemExit(code)
+
+
+def redact(text: str, token: str | None) -> str:
+    """Supprime toute trace du token d'une sortie."""
+    if not text:
+        return ""
+    if token:
+        text = text.replace(token, "***")
+    return text
+
+
+def clone_dir_default() -> Path:
+    if os.path.isdir("/content"):          # Google Colab
+        return Path("/content/tokenizer")
+    return Path.cwd() / ".push_clone"
+
+
+# --------------------------------------------------------------------------- #
+# Token
+# --------------------------------------------------------------------------- #
+def token_from_colab_secret() -> str | None:
+    try:
         from google.colab import userdata  # type: ignore
 
-        token = userdata.get("GITHUB_TOKEN")
-        if token:
-            return token
+        value = userdata.get("GITHUB_TOKEN")
+        return value.strip() if value else None
     except Exception:
-        pass
-    return os.environ.get("GITHUB_TOKEN")
+        return None
+
+
+def read_token(args: argparse.Namespace) -> str | None:
+    """Token par ordre de priorité : --token-file, env, secret Colab, saisie masquée."""
+    if args.token_file:
+        path = Path(args.token_file)
+        if not path.is_file():
+            die(f"fichier de token introuvable : {path}", EXIT_ERROR)
+        token = path.read_text(encoding="utf-8").strip()
+        if token:
+            log("Token lu depuis le fichier indiqué (--token-file).")
+            return token
+
+    for var in ("GITHUB_TOKEN", "GH_TOKEN"):
+        token = os.environ.get(var)
+        if token:
+            log(f"Token récupéré depuis la variable d'environnement {var}.")
+            return token.strip()
+
+    token = token_from_colab_secret()
+    if token:
+        log("Token récupéré depuis le secret Colab 'GITHUB_TOKEN'.")
+        return token
+
+    if args.no_input:
+        return None
+
+    prompt = "Colle ton token GitHub puis Entrée : "
+    try:
+        token = getpass.getpass(prompt)          # saisie masquée
+    except Exception:
+        try:
+            token = input(prompt)                # repli si getpass indisponible
+        except Exception:
+            return None
+    token = (token or "").strip().strip('"').strip("'")
+    if token:
+        log(f"Token saisi ({len(token)} caractères, non affiché).")
+    return token or None
 
 
 def authed_url(url: str, token: str | None) -> str:
+    """URL https porteuse du token, uniquement pour github.com."""
     if token and url.startswith("https://github.com/"):
         return url.replace("https://", f"https://x-access-token:{token}@")
     return url
 
 
-def git(repo: Path | str, *args: str) -> subprocess.CompletedProcess:
-    return subprocess.run(["git", "-C", str(repo), *args], capture_output=True, text=True)
+# --------------------------------------------------------------------------- #
+# Git
+# --------------------------------------------------------------------------- #
+def git(repo: Path | str | None, *args: str) -> subprocess.CompletedProcess:
+    command = ["git"]
+    if repo is not None:
+        command += ["-C", str(repo)]
+    return subprocess.run(command + list(args), capture_output=True, text=True)
 
 
-def redact(text: str, token: str | None) -> str:
-    return text.replace(token, "***") if token else text
+def git_or_die(repo: Path | str | None, token: str | None, *args: str,
+               what: str = "commande git") -> subprocess.CompletedProcess:
+    result = git(repo, *args)
+    if result.returncode != 0:
+        die(f"{what} a échoué :\n{redact(result.stderr or result.stdout, token).strip()}",
+            EXIT_ERROR)
+    return result
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--source", default="/content", help="répertoire contenant models/ et reports/ (défaut : /content)")
-    parser.add_argument("--repo", default=None, help="clone existant du dépôt ; sinon il est cloné dans /content/tokenizer")
-    parser.add_argument("--repo-url", default=DEFAULT_REPO_URL)
-    parser.add_argument("--branch", default=DEFAULT_BRANCH)
-    parser.add_argument("--zip", action="store_true", help="créer aussi baseline_bpe_10k_artifacts.zip dans --source")
-    parser.add_argument("--no-push", action="store_true", help="copier et commiter sans pousser")
-    args = parser.parse_args()
+# --------------------------------------------------------------------------- #
+# Artefacts
+# --------------------------------------------------------------------------- #
+def collect_artifacts(source: Path, include_submissions: bool) -> list[str]:
+    """Chemins relatifs (posix) des fichiers à publier, triés."""
+    roots = list(ARTIFACT_DIRS) + (["submissions"] if include_submissions else [])
+    files: list[str] = []
+    for root in roots:
+        base = source / root
+        if not base.is_dir():
+            continue
+        for path in sorted(base.rglob("*")):
+            if not path.is_file():
+                continue
+            parts = set(path.relative_to(source).parts)
+            if parts & EXCLUDE_DIR_NAMES or path.name.startswith("."):
+                continue
+            if path.suffix.lower() in EXCLUDE_SUFFIXES:
+                continue
+            files.append(path.relative_to(source).as_posix())
+    return files
 
+
+def safety_checks(source: Path, files: list[str], force: bool) -> list[str]:
+    """Contrôles avant publication. Retourne la liste des avertissements bloquants."""
+    import json
+
+    problems: list[str] = []
+
+    baseline = source / "reports" / "baseline_bpe_10k.json"
+    if baseline.is_file():
+        try:
+            status = json.loads(baseline.read_text(encoding="utf-8")).get("status")
+            if status != "computed_on_official_dataset":
+                problems.append(
+                    f"reports/baseline_bpe_10k.json : status = {status!r} "
+                    "(run non conforme au dataset officiel)")
+        except Exception as exc:
+            problems.append(f"reports/baseline_bpe_10k.json illisible : {exc}")
+
+    sweep = source / "reports" / "optimization_sweep.json"
+    if sweep.is_file():
+        try:
+            payload = json.loads(sweep.read_text(encoding="utf-8"))
+            rows = (payload.get("dataset") or {}).get("validation_rows")
+            if rows != 24_000:
+                problems.append(
+                    f"reports/optimization_sweep.json : validation_rows = {rows} "
+                    "(attendu 24 000 : le balayage n'a pas tourné sur le vrai dataset)")
+        except Exception as exc:
+            problems.append(f"reports/optimization_sweep.json illisible : {exc}")
+
+    if not any(f.startswith("models/") and f.endswith("tokenizer.json") for f in files):
+        problems.append("aucun models/**/tokenizer.json trouvé dans les artefacts")
+
+    if problems and not force:
+        log("\n" + "!" * 74)
+        log("PUBLICATION REFUSÉE — les artefacts semblent ne pas venir d'un run réel :")
+        for problem in problems:
+            log(f"  - {problem}")
+        log("Corrigez le run, ou relancez avec --force pour publier quand même.")
+        log("!" * 74)
+        raise SystemExit(EXIT_UNSAFE)
+
+    if problems:
+        log("\nAVERTISSEMENT (--force) :")
+        for problem in problems:
+            log(f"  - {problem}")
+    return problems
+
+
+# --------------------------------------------------------------------------- #
+# Programme principal
+# --------------------------------------------------------------------------- #
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Publie models/ et reports/ vers votre dépôt GitHub (méthode token).",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=__doc__,
+    )
+    parser.add_argument("--source", default="/content" if os.path.isdir("/content") else ".",
+                        help="répertoire contenant models/ et reports/ (défaut : /content ou .)")
+    parser.add_argument("--repo", default=None,
+                        help="clone git existant du dépôt (sinon clonage automatique)")
+    parser.add_argument("--repo-url", default=DEFAULT_REPO_URL, help="URL https du dépôt")
+    parser.add_argument("--branch", default=DEFAULT_BRANCH, help="branche cible")
+    parser.add_argument("--message", default=DEFAULT_MESSAGE, help="message de commit")
+    parser.add_argument("--token-file", default=None,
+                        help="lire le token depuis un fichier (évite la saisie)")
+    parser.add_argument("--no-input", action="store_true",
+                        help="ne jamais demander le token de façon interactive")
+    parser.add_argument("--no-push", action="store_true",
+                        help="copier et commiter sans pousser")
+    parser.add_argument("--include-submissions", action="store_true",
+                        help="publier aussi submissions/**")
+    parser.add_argument("--zip", action="store_true",
+                        help="créer en plus une archive de secours dans --source")
+    parser.add_argument("--force", action="store_true",
+                        help="publier malgré les avertissements de conformité")
+    parser.add_argument("--create-branch", action="store_true",
+                        help="autoriser la création de la branche si elle n'existe pas")
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
     source = Path(args.source).resolve()
-    missing = [rel for rel in ARTIFACTS if not (source / rel).exists()]
-    for rel in ARTIFACTS:
-        state = "OK    " if (source / rel).exists() else "ABSENT"
-        print(f"{state} {source / rel}")
-    if missing:
-        print("\nArtefacts manquants : lancez d'abord le notebook (`Runtime ▸ Run all`).", file=sys.stderr)
-        return 2
+    branch = args.branch
+    repo_url = args.repo_url
+
+    log("=" * 74)
+    log("Publication des artefacts vers GitHub")
+    log("=" * 74)
+    log(f"Source      : {source}")
+    log(f"Dépôt       : {repo_url}")
+    log(f"Branche     : {branch}")
+    log(f"Artefacts   : {', '.join(ARTIFACT_DIRS + (('submissions',) if args.include_submissions else ()))}")
+    log()
+
+    files = collect_artifacts(source, args.include_submissions)
+    if not files:
+        die(f"aucun artefact trouvé dans {source} (attendu : models/, reports/)", EXIT_MISSING)
+
+    log(f"{len(files)} fichier(s) à publier :")
+    total = 0
+    for rel in files:
+        size = (source / rel).stat().st_size
+        total += size
+        log(f"  {size:>12,} o  {rel}")
+    log(f"  {'-' * 12}")
+    log(f"  {total:>12,} o  total")
+
+    safety_checks(source, files, args.force)
 
     if args.zip:
-        archive = source / "baseline_bpe_10k_artifacts.zip"
-        with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as zf:
-            for rel in ARTIFACTS:
-                zf.write(source / rel, rel)
-        print(f"\nArchive : {archive} ({archive.stat().st_size:,} octets)")
+        archive = source / "artifacts_backup.zip"
+        with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as handle:
+            for rel in files:
+                handle.write(source / rel, rel)
+        log(f"\nArchive de secours : {archive} ({archive.stat().st_size:,} o)")
 
-    token = get_token()
-    print(f"\nToken GitHub : {'détecté' if token else 'absent (copie + commit seulement)'}")
+    token = read_token(args)
 
-    repo = Path(args.repo).resolve() if args.repo else None
-    if repo is None:
-        repo = CLONE_DIR if CLONE_DIR.exists() else Path.cwd() / "tokenizer"
+    repo = Path(args.repo).resolve() if args.repo else clone_dir_default()
 
     if not (repo / ".git").exists():
-        print(f"Clone de {args.repo_url} (branche {args.branch}) dans {repo} ...")
+        if not token:
+            die("aucun token fourni et pas de clone local : impossible de cloner.", EXIT_ERROR)
+        log(f"\nClone de {repo_url} (branche {branch}) dans {repo} ...")
         clone = subprocess.run(
-            ["git", "clone", "--branch", args.branch, authed_url(args.repo_url, token), str(repo)],
-            capture_output=True, text=True,
-        )
-        print("clone :", "OK" if clone.returncode == 0 else "ECHEC")
+            ["git", "clone", "--branch", branch, authed_url(repo_url, token), str(repo)],
+            capture_output=True, text=True)
         if clone.returncode != 0:
-            print(redact(clone.stderr or clone.stdout, token)[-800:])
-            return 1
+            die("clonage impossible (token invalide, branche inexistante ou réseau) :\n"
+                f"{redact(clone.stderr or clone.stdout, token).strip()}", EXIT_ERROR)
+        log("clone : OK")
+    else:
+        log(f"\nClone existant réutilisé : {repo}")
 
-    for rel in ARTIFACTS:
-        dest = repo / rel
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(source / rel, dest)
-        print(f"copié -> {dest}")
+    if token:
+        check = git(repo, "ls-remote", "--heads", authed_url(repo_url, token), branch)
+        if check.returncode != 0:
+            die("authentification refusée : vérifiez la portée `repo` du token,"
+                " sa date d'expiration et le nom de la branche.", EXIT_ERROR)
+        log("authentification : OK")
 
-    git(repo, "config", "user.name", "Colab Runner")
-    git(repo, "config", "user.email", "colab@users.noreply.github.com")
-    git(repo, "add", *["models", "reports"])
-    commit = git(repo, "commit", "-m", COMMIT_MESSAGE)
-    nothing = "nothing to commit" in (commit.stdout + commit.stderr)
-    print("commit :", "OK" if commit.returncode == 0 else ("rien à commiter" if nothing else "ECHEC"))
-    if commit.returncode != 0 and not nothing:
-        print(redact(commit.stderr or commit.stdout, token)[-800:])
+    # La branche cible doit exister : sans ce contrôle, une faute de frappe
+    # créerait silencieusement une nouvelle branche distante.
+    exists = git(None, "ls-remote", "--heads",
+                 authed_url(repo_url, token) if token else repo_url, branch)
+    if exists.returncode == 0 and not exists.stdout.strip():
+        if args.create_branch:
+            log(f"branche '{branch}' absente du dépôt : elle sera créée (--create-branch).")
+        else:
+            die(f"la branche '{branch}' n'existe pas sur {repo_url}.\n"
+                "Vérifiez le nom (--branch), ou utilisez --create-branch pour la créer.",
+                EXIT_ERROR)
+    elif exists.returncode != 0 and not token:
+        log("(impossible de vérifier la branche sans token : le push tranchera.)")
 
-    if args.no_push or not token:
-        print("\nPush non effectué. Commande manuelle :")
-        print(f"  git -C {repo} push {args.repo_url} HEAD:{args.branch}")
-        return 0
+    for rel in files:
+        destination = repo / rel
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source / rel, destination)
+    log(f"{len(files)} fichier(s) copié(s) dans le clone.")
 
-    push = subprocess.run(
-        ["git", "-C", str(repo), "push", authed_url(args.repo_url, token), f"HEAD:{args.branch}"],
-        capture_output=True, text=True,
-    )
-    print("push   :", "OK" if push.returncode == 0 else "ECHEC")
+    git(repo, "config", "user.name", "Artifact Publisher")
+    git(repo, "config", "user.email", "publisher@users.noreply.github.com")
+    for root in {Path(rel).parts[0] for rel in files}:
+        git_or_die(repo, token, "add", root, what=f"git add {root}")
+
+    commit = git(repo, "commit", "-m", args.message)
+    if commit.returncode == 0:
+        log("commit : OK")
+    elif "nothing to commit" in (commit.stdout + commit.stderr):
+        log("commit : rien de nouveau (artefacts identiques)")
+    else:
+        die(f"commit impossible :\n{redact(commit.stderr or commit.stdout, token).strip()}",
+            EXIT_ERROR)
+
+    if args.no_push:
+        log("\n--no-push : publication non effectuée. Commande manuelle :")
+        log(f"  git -C {repo} push {repo_url} HEAD:{branch}")
+        return EXIT_OK
+
+    if not token:
+        log("\nAucun token : publication non effectuée. Commande manuelle :")
+        log(f"  git -C {repo} push {repo_url} HEAD:{branch}")
+        return EXIT_OK
+
+    push = git(repo, "push", authed_url(repo_url, token), f"HEAD:{branch}")
     if push.returncode != 0:
-        print(redact(push.stderr or push.stdout, token)[-800:])
-        return 1
-    print(f"Poussé vers {args.repo_url} (branche {args.branch})")
-    return 0
+        die(f"push refusé :\n{redact(push.stderr or push.stdout, token).strip()}", EXIT_ERROR)
+
+    log("push : OK")
+    log()
+    log(f"Publié sur {repo_url} (branche {branch}).")
+    if "github.com" in repo_url:
+        slug = repo_url.rstrip("/").removesuffix(".git")
+        log(f"Vérifiez : {slug}/tree/{branch}")
+    return EXIT_OK
 
 
 if __name__ == "__main__":

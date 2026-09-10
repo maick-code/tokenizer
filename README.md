@@ -169,6 +169,64 @@ et ne doit **jamais** être partagé dans un chat. S'il fuit : le révoquer imm�
 > Le `.gitignore` n'exclut volontairement **pas** `models/` et `reports/` : ils doivent pouvoir
 > être commités. Seuls les caches (`.cache/huggingface/`, `__pycache__/`, etc.) sont ignorés.
 
+## Script de publication (méthode token)
+
+`scripts/push_artifacts_to_github.py` publie `models/**` + `reports/**` (et `submissions/**`
+avec `--include-submissions`) vers votre dépôt, en **une seule commande**, avec le token demandé
+par **saisie masquée**.
+
+### 1. Créer le token
+
+GitHub → *Settings* → *Developer settings* → *Personal access tokens* → *Tokens (classic)* →
+**Generate new token (classic)** → portée **`repo`** → copier le token (`ghp_...`).
+
+### 2. Utilisation
+
+**Colab** (récupérer d'abord le script) :
+
+```python
+!wget -q https://raw.githubusercontent.com/maick-code/tokenizer/arena/01a0889d-tokenizer/scripts/push_artifacts_to_github.py
+!python push_artifacts_to_github.py --source /content
+# le champ « Colle ton token GitHub puis Entrée : » s'affiche -> coller le token
+```
+
+**Local** (dans le dépôt) :
+
+```bash
+python scripts/push_artifacts_to_github.py --source .
+```
+
+**Sans saisie** (le token est alors pris dans la variable d'environnement `GITHUB_TOKEN`) :
+
+```bash
+GITHUB_TOKEN=ghp_xxx python scripts/push_artifacts_to_github.py --source .
+```
+
+### 3. Options principales
+
+| Option | Effet |
+|---|---|
+| `--source DIR` | répertoire contenant `models/` et `reports/` (défaut `/content` en Colab, sinon `.`) |
+| `--branch NAME` | branche cible (défaut `arena/01a0889d-tokenizer`) |
+| `--repo-url URL` | autre dépôt |
+| `--include-submissions` | publier aussi `submissions/**` |
+| `--message TXT` | message de commit |
+| `--no-push` | copier + commiter sans pousser |
+| `--zip` | créer en plus `artifacts_backup.zip` |
+| `--create-branch` | autoriser la création d'une branche inexistante |
+| `--force` | publier malgré un avertissement de conformité |
+| `--no-input` | ne jamais demander le token (mode automatisé) |
+
+### 4. Garde-fous
+
+- **Refuse de publier des artefacts non conformes** (ex. run sur données synthétiques) :
+  contrôle de `reports/baseline_bpe_10k.json` (`status`) et de
+  `reports/optimization_sweep.json` (`validation_rows == 24 000`) → `--force` pour passer outre.
+- **Refuse une branche inexistante** (une faute de frappe ne crée plus de branche silencieusement)
+  → `--create-branch` pour la créer volontairement.
+- Le **token n'est jamais affiché, écrit sur disque ni commité** (sorties filtrées par `***`).
+- Codes de sortie : `0` succès · `1` erreur · `2` artefacts manquants · `3` publication refusée.
+
 ## Configuration de la baseline (figée — ne pas modifier pour cette expérience)
 
 ```python
