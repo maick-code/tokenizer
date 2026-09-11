@@ -1,0 +1,22 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- Hugging Face cache (never commit downloaded corpora) ---
+.cache/huggingface/
+huggingface/
+
+# --- OS noise ---
+.DS_Store
+
+# ---------------------------------------------------------------------------
+# model + report outputs are produced by running notebooks/01_baseline_bpe_10k.ipynb
+# in Google Colab. They are intentionally NOT ignored so that real results can be
+# committed afterwards (e.g. models/baseline_bpe_10k/tokenizer.json,
+# reports/baseline_bpe_10k.json, reports/baseline_bpe_10k.md).
+# Never commit a downloaded dataset.
+# ---------------------------------------------------------------------------
