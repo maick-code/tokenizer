@@ -1,0 +1,102 @@
+{
+  "experiment": "submission_final",
+  "date": "2026-09-11T22:38:22Z",
+  "dataset": {
+    "name": "Similoluwa/african-multilingual-tokenizer-challenge",
+    "revision": "v1.0.0",
+    "train_rows": 240000,
+    "validation_rows": 24000,
+    "word_definition": "len(text.split())"
+  },
+  "baseline_reference_score": 2.059977,
+  "best": {
+    "name": "c12-alph500-bf",
+    "score": 1.8359052269643485,
+    "config": {
+      "name": "c12-alph500-bf",
+      "model": "bpe",
+      "pre": "whitespace_split",
+      "min_freq": 5,
+      "alphabet": false,
+      "limit_alphabet": 500,
+      "byte_fallback": true,
+      "boost": {
+        "ha": 2,
+        "sw": 2,
+        "yo": 2,
+        "am": 2
+      }
+    },
+    "guardrail_pass": true
+  },
+  "results": [
+    {
+      "name": "c12-alph500-bf",
+      "note": "recette de soumission (notebook 03)",
+      "config": {
+        "name": "c12-alph500-bf",
+        "model": "bpe",
+        "pre": "whitespace_split",
+        "min_freq": 5,
+        "alphabet": false,
+        "limit_alphabet": 500,
+        "byte_fallback": true,
+        "boost": {
+          "ha": 2,
+          "sw": 2,
+          "yo": 2,
+          "am": 2
+        }
+      },
+      "vocab_size": 10000,
+      "train_seconds": 24.5049786567688,
+      "score": 1.8359052269643485,
+      "fertility": {
+        "en": 1.8523211520419582,
+        "fr": 1.931970612893262,
+        "ha": 1.5846647145926809,
+        "sw": 1.7606398212853707,
+        "yo": 1.7564542083537396,
+        "am": 2.2418621636256026
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.8523211520419582,
+        "fr": 1.931970612893262,
+        "ha": 1.5846647145926809,
+        "sw": 1.7606398212853707,
+        "yo": 1.7564542083537396,
+        "am": 2.2418621636256026
+      },
+      "tokens": {
+        "en": 163873,
+        "fr": 175137,
+        "ha": 142333,
+        "sw": 122949,
+        "yo": 150630,
+        "am": 178033
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 23985,
+      "raw_scored": 1.8359052269643485,
+      "guardrail_budget": 2.111291011009001,
+      "guardrail_breaches": [],
+      "guardrail_pass": true
+    }
+  ]
+}
