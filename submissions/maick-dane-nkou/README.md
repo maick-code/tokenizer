@@ -48,5 +48,5 @@ Individual entry — tokenizer `c41-lower-alph500-b3`.
 
 - `tokenizer.json` — the submitted tokenizer
 - `metadata.yml` — team metadata
-- `notebook.ipynb` — the notebook that built this tokenizer (`notebooks/05_train_c41_final.ipynb`)
+- `notebook.ipynb` — the notebook that built this tokenizer (same training as `notebooks/05_train_c41_final.ipynb`, without the GitHub publishing cells)
 - `README.md` — this file
