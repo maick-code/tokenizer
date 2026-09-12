@@ -1,0 +1,62 @@
+{
+  "experiment": "c41_final",
+  "recipe": {
+    "name": "c41-lower-alph500-b3",
+    "model": "bpe",
+    "normalizer": "nfc_lower",
+    "pre": "whitespace_split",
+    "min_freq": 5,
+    "limit_alphabet": 500,
+    "byte_fallback": true,
+    "boost": {
+      "ha": 3,
+      "sw": 3,
+      "yo": 3,
+      "am": 3
+    }
+  },
+  "dataset": {
+    "name": "Similoluwa/african-multilingual-tokenizer-challenge",
+    "revision": "v1.0.0",
+    "train_texts": 240000,
+    "validation_rows": 24000
+  },
+  "score": 1.7439588910447639,
+  "expected_score": 1.744,
+  "fertility": {
+    "en": 1.7828052764245104,
+    "fr": 1.9106693729868067,
+    "ha": 1.4838508556096148,
+    "sw": 1.654757131401077,
+    "yo": 1.653466731966697,
+    "am": 2.1837608452016672
+  },
+  "unk_rate": {
+    "en": 0.0,
+    "fr": 0.0,
+    "ha": 0.0,
+    "sw": 0.0,
+    "yo": 0.0,
+    "am": 0.0
+  },
+  "penalised": {
+    "en": 1.7828052764245104,
+    "fr": 1.9106693729868067,
+    "ha": 1.4838508556096148,
+    "sw": 1.654757131401077,
+    "yo": 1.653466731966697,
+    "am": 2.1837608452016672
+  },
+  "unk_total": 0,
+  "lossy_rows": 23989,
+  "guardrail": {
+    "budget": 2.005552724701478,
+    "breaches": [],
+    "pass": true
+  },
+  "vocab_size": 10000,
+  "environment": {
+    "tokenizers": "0.22.1",
+    "timestamp_utc": "2026-09-12T02:22:13Z"
+  }
+}
