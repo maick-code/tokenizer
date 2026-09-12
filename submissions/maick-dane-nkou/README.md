@@ -31,6 +31,19 @@ Individual entry — tokenizer `c32-lower-alph1000-bf-b3`.
 - UNK emitted on validation: 0
 - Jaccard robustness (quality): 0.9652
 
+## Reproducibility
+
+- Dataset: `Similoluwa/african-multilingual-tokenizer-challenge` @ `v1.0.0`
+  (train 240,000 / validation 24,000, 40,000+4,000 per language)
+- Training data: official `train` split only — no external corpus, no pretrained
+  tokenizer, no third-party API
+- Metric: official `fertility + 100 × unk_rate`, averaged over ha/sw/yo/am;
+  guardrail `fertility(en,fr) ≤ 1.15 × mean(scored)` — all verified with the
+  challenge's own evaluation code
+- Environment: `tokenizers==0.22.1` (exact version required by the checker)
+- Rebuild: running `notebook.ipynb` end-to-end retrains this exact tokenizer
+  (config `c32-lower-alph1000-bf-b3`) and regenerates this folder
+
 ## Files
 
 - `tokenizer.json` — the submitted tokenizer
