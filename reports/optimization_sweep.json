@@ -32,10 +32,718 @@
   },
   "settings": {
     "vocab_size": 10000,
-    "max_train_docs": null
+    "max_train_docs": null,
+    "quality": {
+      "samples_per_lang": 150,
+      "seed": 7,
+      "variants": [
+        "lower",
+        "nfd",
+        "dblspace",
+        "detachpunct"
+      ],
+      "selection_tieband": 0.01
+    }
   },
   "baseline_reference_score": 2.059977,
   "results": [
+    {
+      "name": "c30-lower-alph500-bf",
+      "note": "c12 + lowercase : « The »/« the » fusionnés (variante n°1 du test Jaccard)",
+      "config": {
+        "name": "c30-lower-alph500-bf",
+        "model": "bpe",
+        "pre": "whitespace_split",
+        "min_freq": 5,
+        "normalizer": "nfc_lower",
+        "alphabet": false,
+        "limit_alphabet": 500,
+        "byte_fallback": true,
+        "boost": {
+          "ha": 2,
+          "sw": 2,
+          "yo": 2,
+          "am": 2
+        },
+        "note": "c12 + lowercase : « The »/« the » fusionnés (variante n°1 du test Jaccard)"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 29.992913246154785,
+      "score": 1.7575868305114262,
+      "fertility": {
+        "en": 1.7431529688365417,
+        "fr": 1.8451440674226713,
+        "ha": 1.4925572540331111,
+        "sw": 1.6652537518616106,
+        "yo": 1.6597751813241914,
+        "am": 2.2127611348267915
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.7431529688365417,
+        "fr": 1.8451440674226713,
+        "ha": 1.4925572540331111,
+        "sw": 1.6652537518616106,
+        "yo": 1.6597751813241914,
+        "am": 2.2127611348267915
+      },
+      "tokens": {
+        "en": 154215,
+        "fr": 167266,
+        "ha": 134060,
+        "sw": 116288,
+        "yo": 142339,
+        "am": 175722
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 23989,
+      "raw_scored": 1.7575868305114262,
+      "guardrail_budget": 2.02122485508814,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.9641719011986398,
+      "quality": {
+        "lower": 1.0,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8566876047945592,
+        "mean": 0.9641719011986398
+      }
+    },
+    {
+      "name": "c32-lower-alph1000-bf-b3",
+      "note": "c17 + lowercase (le lowercase fait-il rentrer x3 dans le guardrail ?)",
+      "config": {
+        "name": "c32-lower-alph1000-bf-b3",
+        "model": "bpe",
+        "pre": "whitespace_split",
+        "min_freq": 5,
+        "normalizer": "nfc_lower",
+        "alphabet": false,
+        "limit_alphabet": 1000,
+        "byte_fallback": true,
+        "boost": {
+          "ha": 3,
+          "sw": 3,
+          "yo": 3,
+          "am": 3
+        },
+        "note": "c17 + lowercase (le lowercase fait-il rentrer x3 dans le guardrail ?)"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 36.95146322250366,
+      "score": 1.7577300319444404,
+      "fertility": {
+        "en": 1.8000090427155275,
+        "fr": 1.9268852314344969,
+        "ha": 1.49388214074973,
+        "sw": 1.6703517012257991,
+        "yo": 1.6630168614006857,
+        "am": 2.2036694244015465
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.8000090427155275,
+        "fr": 1.9268852314344969,
+        "ha": 1.49388214074973,
+        "sw": 1.6703517012257991,
+        "yo": 1.6630168614006857,
+        "am": 2.2036694244015465
+      },
+      "tokens": {
+        "en": 159245,
+        "fr": 174676,
+        "ha": 134179,
+        "sw": 116644,
+        "yo": 142617,
+        "am": 175000
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 23989,
+      "raw_scored": 1.7577300319444404,
+      "guardrail_budget": 2.0213895367361063,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.9651731022636671,
+      "quality": {
+        "lower": 1.0,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8606924090546688,
+        "mean": 0.9651731022636671
+      }
+    },
+    {
+      "name": "c31-lower-alph1000-bf",
+      "note": "c11 + lowercase",
+      "config": {
+        "name": "c31-lower-alph1000-bf",
+        "model": "bpe",
+        "pre": "whitespace_split",
+        "min_freq": 5,
+        "normalizer": "nfc_lower",
+        "alphabet": false,
+        "limit_alphabet": 1000,
+        "byte_fallback": true,
+        "boost": {
+          "ha": 2,
+          "sw": 2,
+          "yo": 2,
+          "am": 2
+        },
+        "note": "c11 + lowercase"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 29.16963815689087,
+      "score": 1.7711051060896104,
+      "fertility": {
+        "en": 1.7622670087827375,
+        "fr": 1.8607863036667696,
+        "ha": 1.5038911588862045,
+        "sw": 1.6813495245732615,
+        "yo": 1.6673663098486438,
+        "am": 2.2318134310503317
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.7622670087827375,
+        "fr": 1.8607863036667696,
+        "ha": 1.5038911588862045,
+        "sw": 1.6813495245732615,
+        "yo": 1.6673663098486438,
+        "am": 2.2318134310503317
+      },
+      "tokens": {
+        "en": 155906,
+        "fr": 168684,
+        "ha": 135078,
+        "sw": 117412,
+        "yo": 142990,
+        "am": 177235
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 23989,
+      "raw_scored": 1.7711051060896104,
+      "guardrail_budget": 2.0367708720030517,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.964995720806979,
+      "quality": {
+        "lower": 1.0,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8599828832279162,
+        "mean": 0.964995720806979
+      }
+    },
+    {
+      "name": "c23-alph500-bf-b4",
+      "note": "alphabet 500 + les 4 langues notées x4 (sonde la frontière du guardrail EN/FR)",
+      "config": {
+        "name": "c23-alph500-bf-b4",
+        "model": "bpe",
+        "pre": "whitespace_split",
+        "min_freq": 5,
+        "alphabet": false,
+        "limit_alphabet": 500,
+        "byte_fallback": true,
+        "boost": {
+          "ha": 4,
+          "sw": 4,
+          "yo": 4,
+          "am": 4
+        },
+        "note": "alphabet 500 + les 4 langues notées x4 (sonde la frontière du guardrail EN/FR)"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 39.73312711715698,
+      "score": 1.8142136132967508,
+      "fertility": {
+        "en": 1.928720794854695,
+        "fr": 2.053247584168027,
+        "ha": 1.5692448145715272,
+        "sw": 1.7408208271279642,
+        "yo": 1.7471489540334428,
+        "am": 2.1996398574540694
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.928720794854695,
+        "fr": 2.053247584168027,
+        "ha": 1.5692448145715272,
+        "sw": 1.7408208271279642,
+        "yo": 1.7471489540334428,
+        "am": 2.1996398574540694
+      },
+      "tokens": {
+        "en": 170632,
+        "fr": 186131,
+        "ha": 140948,
+        "sw": 121565,
+        "yo": 149832,
+        "am": 174680
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 23985,
+      "raw_scored": 1.8142136132967508,
+      "guardrail_budget": 2.086345655291263,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.9037878947712307,
+      "quality": {
+        "lower": 0.7514573784417584,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8636942006431643,
+        "mean": 0.9037878947712307
+      }
+    },
+    {
+      "name": "c22-alph500-bf-am4b3",
+      "note": "alphabet 500 + ha/sw/yo x3 et am x4 (l'amharique reste la langue la plus coûteuse)",
+      "config": {
+        "name": "c22-alph500-bf-am4b3",
+        "model": "bpe",
+        "pre": "whitespace_split",
+        "min_freq": 5,
+        "alphabet": false,
+        "limit_alphabet": 500,
+        "byte_fallback": true,
+        "boost": {
+          "ha": 3,
+          "sw": 3,
+          "yo": 3,
+          "am": 4
+        },
+        "note": "alphabet 500 + ha/sw/yo x3 et am x4 (l'amharique reste la langue la plus coûteuse)"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 36.073524951934814,
+      "score": 1.821135189141665,
+      "fertility": {
+        "en": 1.9234195028767138,
+        "fr": 2.0241031637470766,
+        "ha": 1.592012825794097,
+        "sw": 1.7710075610035514,
+        "yo": 1.7702605004780896,
+        "am": 2.151259869290922
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.9234195028767138,
+        "fr": 2.0241031637470766,
+        "ha": 1.592012825794097,
+        "sw": 1.7710075610035514,
+        "yo": 1.7702605004780896,
+        "am": 2.151259869290922
+      },
+      "tokens": {
+        "en": 170163,
+        "fr": 183489,
+        "ha": 142993,
+        "sw": 123673,
+        "yo": 151814,
+        "am": 170838
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 23985,
+      "raw_scored": 1.821135189141665,
+      "guardrail_budget": 2.0943054675129145,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.9054169009289954,
+      "quality": {
+        "lower": 0.7541183598900256,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8675492438259562,
+        "mean": 0.9054169009289954
+      }
+    },
+    {
+      "name": "c20-alph500-bf-b3",
+      "note": "alphabet 500 + les 4 langues notées x3 (croisement des deux leviers)",
+      "config": {
+        "name": "c20-alph500-bf-b3",
+        "model": "bpe",
+        "pre": "whitespace_split",
+        "min_freq": 5,
+        "alphabet": false,
+        "limit_alphabet": 500,
+        "byte_fallback": true,
+        "boost": {
+          "ha": 3,
+          "sw": 3,
+          "yo": 3,
+          "am": 3
+        },
+        "note": "alphabet 500 + les 4 langues notées x3 (croisement des deux leviers)"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 33.2270884513855,
+      "score": 1.823746338708736,
+      "fertility": {
+        "en": 1.8997388915891442,
+        "fr": 1.9996911265057582,
+        "ha": 1.5750787695253787,
+        "sw": 1.7520334517126819,
+        "yo": 1.7519764919890857,
+        "am": 2.2158966416077974
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.8997388915891442,
+        "fr": 1.9996911265057582,
+        "ha": 1.5750787695253787,
+        "sw": 1.7520334517126819,
+        "yo": 1.7519764919890857,
+        "am": 2.2158966416077974
+      },
+      "tokens": {
+        "en": 168068,
+        "fr": 181276,
+        "ha": 141472,
+        "sw": 122348,
+        "yo": 150246,
+        "am": 175971
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 23985,
+      "raw_scored": 1.823746338708736,
+      "guardrail_budget": 2.097308289515046,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.9041495030671064,
+      "quality": {
+        "lower": 0.7512277360441413,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8653702762242843,
+        "mean": 0.9041495030671064
+      }
+    },
+    {
+      "name": "c37-alph500-bf-am3",
+      "note": "c12 + amharique x3 seul (entre c12 et c22)",
+      "config": {
+        "name": "c37-alph500-bf-am3",
+        "model": "bpe",
+        "pre": "whitespace_split",
+        "min_freq": 5,
+        "alphabet": false,
+        "limit_alphabet": 500,
+        "byte_fallback": true,
+        "boost": {
+          "ha": 2,
+          "sw": 2,
+          "yo": 2,
+          "am": 3
+        },
+        "note": "c12 + amharique x3 seul (entre c12 et c22)"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 28.270748138427734,
+      "score": 1.8316737064561213,
+      "fertility": {
+        "en": 1.8823768777763963,
+        "fr": 1.9617548426951419,
+        "ha": 1.6077667308698604,
+        "sw": 1.7887644632833084,
+        "yo": 1.7824925954429907,
+        "am": 2.1476710362283256
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.8823768777763963,
+        "fr": 1.9617548426951419,
+        "ha": 1.6077667308698604,
+        "sw": 1.7887644632833084,
+        "yo": 1.7824925954429907,
+        "am": 2.1476710362283256
+      },
+      "tokens": {
+        "en": 166532,
+        "fr": 177837,
+        "ha": 144408,
+        "sw": 124913,
+        "yo": 152863,
+        "am": 170553
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 23985,
+      "raw_scored": 1.8316737064561213,
+      "guardrail_budget": 2.106424762424539,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.9051872307462758,
+      "quality": {
+        "lower": 0.7541635053292257,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8665854176558777,
+        "mean": 0.9051872307462758
+      }
+    },
+    {
+      "name": "c38-alph500-bf-swyo3",
+      "note": "c12 + sw/yo x3 (les deuxièmes langues les plus chères)",
+      "config": {
+        "name": "c38-alph500-bf-swyo3",
+        "model": "bpe",
+        "pre": "whitespace_split",
+        "min_freq": 5,
+        "alphabet": false,
+        "limit_alphabet": 500,
+        "byte_fallback": true,
+        "boost": {
+          "ha": 2,
+          "sw": 3,
+          "yo": 3,
+          "am": 2
+        },
+        "note": "c12 + sw/yo x3 (les deuxièmes langues les plus chères)"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 28.689310789108276,
+      "score": 1.8337824940235996,
+      "fertility": {
+        "en": 1.8638280075506675,
+        "fr": 1.9586992013413935,
+        "ha": 1.5997951435665059,
+        "sw": 1.71773685416428,
+        "yo": 1.7200144592924276,
+        "am": 2.2975835190711846
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.8638280075506675,
+        "fr": 1.9586992013413935,
+        "ha": 1.5997951435665059,
+        "sw": 1.71773685416428,
+        "yo": 1.7200144592924276,
+        "am": 2.2975835190711846
+      },
+      "tokens": {
+        "en": 164891,
+        "fr": 177560,
+        "ha": 143692,
+        "sw": 119953,
+        "yo": 147505,
+        "am": 182458
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 23985,
+      "raw_scored": 1.8337824940235996,
+      "guardrail_budget": 2.1088498681271393,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.9026487960390894,
+      "quality": {
+        "lower": 0.7470608943307964,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8635342898255615,
+        "mean": 0.9026487960390894
+      }
+    },
+    {
+      "name": "c28-nfkc-alph500-bf",
+      "note": "c12 + NFKC : variantes de compatibilité pliées (présentation arabes, fullwidth…)",
+      "config": {
+        "name": "c28-nfkc-alph500-bf",
+        "model": "bpe",
+        "pre": "whitespace_split",
+        "min_freq": 5,
+        "normalizer": "nfkc",
+        "alphabet": false,
+        "limit_alphabet": 500,
+        "byte_fallback": true,
+        "boost": {
+          "ha": 2,
+          "sw": 2,
+          "yo": 2,
+          "am": 2
+        },
+        "note": "c12 + NFKC : variantes de compatibilité pliées (présentation arabes, fullwidth…)"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 27.113016366958618,
+      "score": 1.8343395000584293,
+      "fertility": {
+        "en": 1.8522872418587302,
+        "fr": 1.9318713321272558,
+        "ha": 1.5846201805853994,
+        "sw": 1.7605968610379197,
+        "yo": 1.7563609225961427,
+        "am": 2.235780036014255
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.8522872418587302,
+        "fr": 1.9318713321272558,
+        "ha": 1.5846201805853994,
+        "sw": 1.7605968610379197,
+        "yo": 1.7563609225961427,
+        "am": 2.235780036014255
+      },
+      "tokens": {
+        "en": 163870,
+        "fr": 175128,
+        "ha": 142329,
+        "sw": 122946,
+        "yo": 150622,
+        "am": 177550
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 23985,
+      "raw_scored": 1.8343395000584293,
+      "guardrail_budget": 2.1094904250671935,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.9035817939722129,
+      "quality": {
+        "lower": 0.750871596984643,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8634555789042088,
+        "mean": 0.9035817939722129
+      }
+    },
     {
       "name": "c12-alph500-bf",
       "note": "alphabet limité à 500 caractères + byte fallback (limite basse du levier)",
@@ -56,7 +764,7 @@
         "note": "alphabet limité à 500 caractères + byte fallback (limite basse du levier)"
       },
       "vocab_size": 10000,
-      "train_seconds": 25.868812322616577,
+      "train_seconds": 26.986032247543335,
       "score": 1.8359052269643485,
       "fertility": {
         "en": 1.8523211520419582,
@@ -103,7 +811,169 @@
       "raw_scored": 1.8359052269643485,
       "guardrail_budget": 2.111291011009001,
       "guardrail_breaches": [],
-      "guardrail_pass": true
+      "guardrail_pass": true,
+      "quality_mean": 0.9035788382742763,
+      "quality": {
+        "lower": 0.7508835837167062,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8634317693803992,
+        "mean": 0.9035788382742763
+      }
+    },
+    {
+      "name": "c39-alph500-bf-mf2",
+      "note": "c12 + min_frequency=2",
+      "config": {
+        "name": "c39-alph500-bf-mf2",
+        "model": "bpe",
+        "pre": "whitespace_split",
+        "min_freq": 2,
+        "alphabet": false,
+        "limit_alphabet": 500,
+        "byte_fallback": true,
+        "boost": {
+          "ha": 2,
+          "sw": 2,
+          "yo": 2,
+          "am": 2
+        },
+        "note": "c12 + min_frequency=2"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 26.349111318588257,
+      "score": 1.8359052269643485,
+      "fertility": {
+        "en": 1.8523211520419582,
+        "fr": 1.931970612893262,
+        "ha": 1.5846647145926809,
+        "sw": 1.7606398212853707,
+        "yo": 1.7564542083537396,
+        "am": 2.2418621636256026
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.8523211520419582,
+        "fr": 1.931970612893262,
+        "ha": 1.5846647145926809,
+        "sw": 1.7606398212853707,
+        "yo": 1.7564542083537396,
+        "am": 2.2418621636256026
+      },
+      "tokens": {
+        "en": 163873,
+        "fr": 175137,
+        "ha": 142333,
+        "sw": 122949,
+        "yo": 150630,
+        "am": 178033
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 23985,
+      "raw_scored": 1.8359052269643485,
+      "guardrail_budget": 2.111291011009001,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.9035788382742763,
+      "quality": {
+        "lower": 0.7508835837167062,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8634317693803992,
+        "mean": 0.9035788382742763
+      }
+    },
+    {
+      "name": "c40-alph500-bf-mf8",
+      "note": "c12 + min_frequency=8",
+      "config": {
+        "name": "c40-alph500-bf-mf8",
+        "model": "bpe",
+        "pre": "whitespace_split",
+        "min_freq": 8,
+        "alphabet": false,
+        "limit_alphabet": 500,
+        "byte_fallback": true,
+        "boost": {
+          "ha": 2,
+          "sw": 2,
+          "yo": 2,
+          "am": 2
+        },
+        "note": "c12 + min_frequency=8"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 26.656203746795654,
+      "score": 1.8359052269643485,
+      "fertility": {
+        "en": 1.8523211520419582,
+        "fr": 1.931970612893262,
+        "ha": 1.5846647145926809,
+        "sw": 1.7606398212853707,
+        "yo": 1.7564542083537396,
+        "am": 2.2418621636256026
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.8523211520419582,
+        "fr": 1.931970612893262,
+        "ha": 1.5846647145926809,
+        "sw": 1.7606398212853707,
+        "yo": 1.7564542083537396,
+        "am": 2.2418621636256026
+      },
+      "tokens": {
+        "en": 163873,
+        "fr": 175137,
+        "ha": 142333,
+        "sw": 122949,
+        "yo": 150630,
+        "am": 178033
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 23985,
+      "raw_scored": 1.8359052269643485,
+      "guardrail_budget": 2.111291011009001,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.9035788382742763,
+      "quality": {
+        "lower": 0.7508835837167062,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8634317693803992,
+        "mean": 0.9035788382742763
+      }
     },
     {
       "name": "c17-alph1000-bf-b3",
@@ -125,7 +995,7 @@
         "note": "alphabet 1000 + byte fallback + les 4 langues notées x3 (frontière du guardrail)"
       },
       "vocab_size": 10000,
-      "train_seconds": 31.27338480949402,
+      "train_seconds": 32.447606801986694,
       "score": 1.8376266520965618,
       "fertility": {
         "en": 1.917326973290079,
@@ -172,7 +1042,15 @@
       "raw_scored": 1.8376266520965618,
       "guardrail_budget": 2.113270649911046,
       "guardrail_breaches": [],
-      "guardrail_pass": true
+      "guardrail_pass": true,
+      "quality_mean": 0.9054123533294695,
+      "quality": {
+        "lower": 0.7534633975422881,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8681860157755898,
+        "mean": 0.9054123533294695
+      }
     },
     {
       "name": "c13-alph1000-bf-am3",
@@ -194,15 +1072,15 @@
         "note": "alphabet 1000 + byte fallback + amharique sur-échantillonné x3"
       },
       "vocab_size": 10000,
-      "train_seconds": 27.6044864654541,
-      "score": 1.8457267345275954,
+      "train_seconds": 28.238607168197632,
+      "score": 1.8457134126834391,
       "fertility": {
         "en": 1.8988233166419877,
-        "fr": 1.9798680668931739,
-        "ha": 1.61931217225754,
+        "fr": 1.9795812557913781,
+        "ha": 1.6193344392611808,
         "sw": 1.8052182380570512,
         "yo": 1.7959723874157514,
-        "am": 2.1624041403800387
+        "am": 2.162328585999773
       },
       "unk_rate": {
         "en": 0.0,
@@ -214,19 +1092,19 @@
       },
       "penalised": {
         "en": 1.8988233166419877,
-        "fr": 1.9798680668931739,
-        "ha": 1.61931217225754,
+        "fr": 1.9795812557913781,
+        "ha": 1.6193344392611808,
         "sw": 1.8052182380570512,
         "yo": 1.7959723874157514,
-        "am": 2.1624041403800387
+        "am": 2.162328585999773
       },
       "tokens": {
         "en": 167987,
-        "fr": 179479,
-        "ha": 145445,
+        "fr": 179453,
+        "ha": 145447,
         "sw": 126062,
         "yo": 154019,
-        "am": 171723
+        "am": 171717
       },
       "words": {
         "en": 88469,
@@ -238,10 +1116,18 @@
       },
       "unk_total": 0,
       "lossy_rows": 23985,
-      "raw_scored": 1.8457267345275954,
-      "guardrail_budget": 2.1225857447067344,
+      "raw_scored": 1.8457134126834391,
+      "guardrail_budget": 2.122570424585955,
       "guardrail_breaches": [],
-      "guardrail_pass": true
+      "guardrail_pass": true,
+      "quality_mean": 0.9066823459764257,
+      "quality": {
+        "lower": 0.7566047948301136,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8701245890755894,
+        "mean": 0.9066823459764257
+      }
     },
     {
       "name": "c11-alph1000-bf",
@@ -263,15 +1149,15 @@
         "note": "alphabet limité à 1000 caractères + byte fallback (~+2 000 merges vs c8)"
       },
       "vocab_size": 10000,
-      "train_seconds": 25.522369146347046,
-      "score": 1.8494720980890005,
+      "train_seconds": 26.793896675109863,
+      "score": 1.8494791237348012,
       "fertility": {
         "en": 1.8693666708112446,
-        "fr": 1.9477231610995895,
-        "ha": 1.5951413398056091,
+        "fr": 1.9477452234920354,
+        "ha": 1.5951190728019684,
         "sw": 1.7793275289265666,
         "yo": 1.7661442664241236,
-        "am": 2.257275257199703
+        "am": 2.2573256267865465
       },
       "unk_rate": {
         "en": 0.0,
@@ -283,19 +1169,19 @@
       },
       "penalised": {
         "en": 1.8693666708112446,
-        "fr": 1.9477231610995895,
-        "ha": 1.5951413398056091,
+        "fr": 1.9477452234920354,
+        "ha": 1.5951190728019684,
         "sw": 1.7793275289265666,
         "yo": 1.7661442664241236,
-        "am": 2.257275257199703
+        "am": 2.2573256267865465
       },
       "tokens": {
         "en": 165381,
-        "fr": 176565,
-        "ha": 143274,
+        "fr": 176567,
+        "ha": 143272,
         "sw": 124254,
         "yo": 151461,
-        "am": 179257
+        "am": 179261
       },
       "words": {
         "en": 88469,
@@ -307,10 +1193,327 @@
       },
       "unk_total": 0,
       "lossy_rows": 23985,
-      "raw_scored": 1.8494720980890005,
-      "guardrail_budget": 2.1268929128023504,
+      "raw_scored": 1.8494791237348012,
+      "guardrail_budget": 2.1269009922950213,
       "guardrail_breaches": [],
-      "guardrail_pass": true
+      "guardrail_pass": true,
+      "quality_mean": 0.9048658993779715,
+      "quality": {
+        "lower": 0.7527613966494288,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8667022008624573,
+        "mean": 0.9048658993779715
+      }
+    },
+    {
+      "name": "c25-punctiso-alph500-bf-b3",
+      "note": "comme c24 avec les 4 langues notées x3",
+      "config": {
+        "name": "c25-punctiso-alph500-bf-b3",
+        "model": "bpe",
+        "pre": "whitespace_split_punct",
+        "min_freq": 5,
+        "alphabet": false,
+        "limit_alphabet": 500,
+        "byte_fallback": true,
+        "boost": {
+          "ha": 3,
+          "sw": 3,
+          "yo": 3,
+          "am": 3
+        },
+        "note": "comme c24 avec les 4 langues notées x3"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 42.889185428619385,
+      "score": 1.8744732206894772,
+      "fertility": {
+        "en": 1.9281443217398184,
+        "fr": 2.0810572298460044,
+        "ha": 1.6295327269286008,
+        "sw": 1.7829505097949365,
+        "yo": 1.7969052449917209,
+        "am": 2.2885044010426503
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.9281443217398184,
+        "fr": 2.0810572298460044,
+        "ha": 1.6295327269286008,
+        "sw": 1.7829505097949365,
+        "yo": 1.7969052449917209,
+        "am": 2.2885044010426503
+      },
+      "tokens": {
+        "en": 170581,
+        "fr": 188652,
+        "ha": 146363,
+        "sw": 124507,
+        "yo": 154099,
+        "am": 181737
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 23985,
+      "raw_scored": 1.8744732206894772,
+      "guardrail_budget": 2.1556442037928987,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.9384906097179316,
+      "quality": {
+        "lower": 0.7539624388717264,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 1.0,
+        "mean": 0.9384906097179316
+      }
+    },
+    {
+      "name": "c21-alph250-bf-b3",
+      "note": "alphabet 250 + les 4 langues notées x3",
+      "config": {
+        "name": "c21-alph250-bf-b3",
+        "model": "bpe",
+        "pre": "whitespace_split",
+        "min_freq": 5,
+        "alphabet": false,
+        "limit_alphabet": 250,
+        "byte_fallback": true,
+        "boost": {
+          "ha": 3,
+          "sw": 3,
+          "yo": 3,
+          "am": 3
+        },
+        "note": "alphabet 250 + les 4 langues notées x3"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 32.802481174468994,
+      "score": 1.8856450306754753,
+      "fertility": {
+        "en": 1.892109100362839,
+        "fr": 2.018907470326082,
+        "ha": 1.5843529765417117,
+        "sw": 1.745775575667316,
+        "yo": 1.762424496839945,
+        "am": 2.450027073652928
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.892109100362839,
+        "fr": 2.018907470326082,
+        "ha": 1.5843529765417117,
+        "sw": 1.745775575667316,
+        "yo": 1.762424496839945,
+        "am": 2.450027073652928
+      },
+      "tokens": {
+        "en": 167393,
+        "fr": 183018,
+        "ha": 142305,
+        "sw": 121911,
+        "yo": 151142,
+        "am": 194564
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 23985,
+      "raw_scored": 1.8856450306754753,
+      "guardrail_budget": 2.1684917852767964,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.9038332103548057,
+      "quality": {
+        "lower": 0.7498176976443324,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8655151437748905,
+        "mean": 0.9038332103548057
+      }
+    },
+    {
+      "name": "c29-nfkc-punctiso-alph500-bf",
+      "note": "NFKC + ponctuation isolée + alphabet 500 + byte fallback",
+      "config": {
+        "name": "c29-nfkc-punctiso-alph500-bf",
+        "model": "bpe",
+        "pre": "whitespace_split_punct",
+        "min_freq": 5,
+        "normalizer": "nfkc",
+        "alphabet": false,
+        "limit_alphabet": 500,
+        "byte_fallback": true,
+        "boost": {
+          "ha": 2,
+          "sw": 2,
+          "yo": 2,
+          "am": 2
+        },
+        "note": "NFKC + ponctuation isolée + alphabet 500 + byte fallback"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 32.402061462402344,
+      "score": 1.8863936089108622,
+      "fertility": {
+        "en": 1.8813821790683742,
+        "fr": 2.0154436747120856,
+        "ha": 1.6368029036172747,
+        "sw": 1.7953087409783481,
+        "yo": 1.8027705870006296,
+        "am": 2.3106922040471964
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.8813821790683742,
+        "fr": 2.0154436747120856,
+        "ha": 1.6368029036172747,
+        "sw": 1.7953087409783481,
+        "yo": 1.8027705870006296,
+        "am": 2.3106922040471964
+      },
+      "tokens": {
+        "en": 166444,
+        "fr": 182704,
+        "ha": 147016,
+        "sw": 125370,
+        "yo": 154602,
+        "am": 183499
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 23985,
+      "raw_scored": 1.8863936089108622,
+      "guardrail_budget": 2.1693526502474914,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.93856281880949,
+      "quality": {
+        "lower": 0.75425127523796,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 1.0,
+        "mean": 0.93856281880949
+      }
+    },
+    {
+      "name": "c24-punctiso-alph500-bf",
+      "note": "ponctuation isolée (\\p{P}) + alphabet 500 + byte fallback — mots propres pour les merges",
+      "config": {
+        "name": "c24-punctiso-alph500-bf",
+        "model": "bpe",
+        "pre": "whitespace_split_punct",
+        "min_freq": 5,
+        "alphabet": false,
+        "limit_alphabet": 500,
+        "byte_fallback": true,
+        "boost": {
+          "ha": 2,
+          "sw": 2,
+          "yo": 2,
+          "am": 2
+        },
+        "note": "ponctuation isolée (\\p{P}) + alphabet 500 + byte fallback — mots propres pour les merges"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 32.64272499084473,
+      "score": 1.8878503841584309,
+      "fertility": {
+        "en": 1.8815291231956957,
+        "fr": 2.0152892379649647,
+        "ha": 1.6367361026063527,
+        "sw": 1.7953373811433153,
+        "yo": 1.8028055691597284,
+        "am": 2.3165224837243272
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.8815291231956957,
+        "fr": 2.0152892379649647,
+        "ha": 1.6367361026063527,
+        "sw": 1.7953373811433153,
+        "yo": 1.8028055691597284,
+        "am": 2.3165224837243272
+      },
+      "tokens": {
+        "en": 166457,
+        "fr": 182690,
+        "ha": 147010,
+        "sw": 125372,
+        "yo": 154605,
+        "am": 183962
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 23985,
+      "raw_scored": 1.8878503841584309,
+      "guardrail_budget": 2.1710279417821954,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.9385638456987403,
+      "quality": {
+        "lower": 0.7542553827949612,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 1.0,
+        "mean": 0.9385638456987403
+      }
     },
     {
       "name": "c10-alph2000-bf",
@@ -332,15 +1535,15 @@
         "note": "alphabet limité à 2000 caractères + byte fallback (les rares passent en <0xXX>)"
       },
       "vocab_size": 10000,
-      "train_seconds": 24.993897914886475,
-      "score": 1.8881092740789012,
+      "train_seconds": 25.325350284576416,
+      "score": 1.8880836234469738,
       "fertility": {
         "en": 1.9097536990358204,
         "fr": 1.9883400255923753,
         "ha": 1.6250904597022902,
         "sw": 1.8138532477947074,
-        "yo": 1.8008115860910936,
-        "am": 2.3126818027275133
+        "yo": 1.8008349075304928,
+        "am": 2.3125558787604046
       },
       "unk_rate": {
         "en": 0.0,
@@ -355,16 +1558,16 @@
         "fr": 1.9883400255923753,
         "ha": 1.6250904597022902,
         "sw": 1.8138532477947074,
-        "yo": 1.8008115860910936,
-        "am": 2.3126818027275133
+        "yo": 1.8008349075304928,
+        "am": 2.3125558787604046
       },
       "tokens": {
         "en": 168954,
         "fr": 180247,
         "ha": 145964,
         "sw": 126665,
-        "yo": 154434,
-        "am": 183657
+        "yo": 154436,
+        "am": 183647
       },
       "words": {
         "en": 88469,
@@ -376,10 +1579,172 @@
       },
       "unk_total": 0,
       "lossy_rows": 23985,
-      "raw_scored": 1.8881092740789012,
-      "guardrail_budget": 2.171325665190736,
+      "raw_scored": 1.8880836234469738,
+      "guardrail_budget": 2.17129616696402,
       "guardrail_breaches": [],
-      "guardrail_pass": true
+      "guardrail_pass": true,
+      "quality_mean": 0.9076618976135203,
+      "quality": {
+        "lower": 0.7574781607591037,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8731694296949777,
+        "mean": 0.9076618976135203
+      }
+    },
+    {
+      "name": "c27-punctdigits-alph500-bf",
+      "note": "c24 + chiffres isolés (\\d+) : formes de type « 2024, » nettoyées",
+      "config": {
+        "name": "c27-punctdigits-alph500-bf",
+        "model": "bpe",
+        "pre": "whitespace_split_punct_digits",
+        "min_freq": 5,
+        "alphabet": false,
+        "limit_alphabet": 500,
+        "byte_fallback": true,
+        "boost": {
+          "ha": 2,
+          "sw": 2,
+          "yo": 2,
+          "am": 2
+        },
+        "note": "c24 + chiffres isolés (\\d+) : formes de type « 2024, » nettoyées"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 42.30448007583618,
+      "score": 1.8891812346685835,
+      "fertility": {
+        "en": 1.8813934824627836,
+        "fr": 2.0138772448484312,
+        "ha": 1.6366693015954308,
+        "sw": 1.7946356971016153,
+        "yo": 1.8074115534410784,
+        "am": 2.3180083865362096
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.8813934824627836,
+        "fr": 2.0138772448484312,
+        "ha": 1.6366693015954308,
+        "sw": 1.7946356971016153,
+        "yo": 1.8074115534410784,
+        "am": 2.3180083865362096
+      },
+      "tokens": {
+        "en": 166445,
+        "fr": 182562,
+        "ha": 147004,
+        "sw": 125323,
+        "yo": 155000,
+        "am": 184080
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 23985,
+      "raw_scored": 1.8891812346685835,
+      "guardrail_budget": 2.1725584198688708,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.9385276158172902,
+      "quality": {
+        "lower": 0.7541104632691609,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 1.0,
+        "mean": 0.9385276158172902
+      }
+    },
+    {
+      "name": "c18-alph250-bf",
+      "note": "alphabet limité à 250 caractères + byte fallback (sonde le genou du levier)",
+      "config": {
+        "name": "c18-alph250-bf",
+        "model": "bpe",
+        "pre": "whitespace_split",
+        "min_freq": 5,
+        "alphabet": false,
+        "limit_alphabet": 250,
+        "byte_fallback": true,
+        "boost": {
+          "ha": 2,
+          "sw": 2,
+          "yo": 2,
+          "am": 2
+        },
+        "note": "alphabet limité à 250 caractères + byte fallback (sonde le genou du levier)"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 27.215980291366577,
+      "score": 1.8992997658483124,
+      "fertility": {
+        "en": 1.8446461472380156,
+        "fr": 1.9418104399241054,
+        "ha": 1.5922020953250426,
+        "sw": 1.7557280329934701,
+        "yo": 1.7673453205531846,
+        "am": 2.481923614521552
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.8446461472380156,
+        "fr": 1.9418104399241054,
+        "ha": 1.5922020953250426,
+        "sw": 1.7557280329934701,
+        "yo": 1.7673453205531846,
+        "am": 2.481923614521552
+      },
+      "tokens": {
+        "en": 163194,
+        "fr": 176029,
+        "ha": 143010,
+        "sw": 122606,
+        "yo": 151564,
+        "am": 197097
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 23985,
+      "raw_scored": 1.8992997658483124,
+      "guardrail_budget": 2.184194730725559,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.903353184226152,
+      "quality": {
+        "lower": 0.7497094409417044,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8637032959629036,
+        "mean": 0.903353184226152
+      }
     },
     {
       "name": "c9-bytefallback",
@@ -400,7 +1765,7 @@
         "note": "EXP-004 : c8 + byte_fallback (256 tokens <0xXX>) -> supprime les [UNK]"
       },
       "vocab_size": 10000,
-      "train_seconds": 24.581135511398315,
+      "train_seconds": 25.78974485397339,
       "score": 1.936819954499466,
       "fertility": {
         "en": 1.9599407702132952,
@@ -447,7 +1812,15 @@
       "raw_scored": 1.936819954499466,
       "guardrail_budget": 2.227342947674386,
       "guardrail_breaches": [],
-      "guardrail_pass": true
+      "guardrail_pass": true,
+      "quality_mean": 0.910611710609641,
+      "quality": {
+        "lower": 0.7628187203775123,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8796281220610516,
+        "mean": 0.910611710609641
+      }
     },
     {
       "name": "c15-sp-unigram",
@@ -469,7 +1842,7 @@
         "note": "SentencePiece unigram + byte fallback, converti en tokenizer.json"
       },
       "vocab_size": 10000,
-      "train_seconds": 361.14893674850464,
+      "train_seconds": 367.09361386299133,
       "score": 1.9673854845585868,
       "fertility": {
         "en": 1.9423639919067697,
@@ -516,7 +1889,92 @@
       "raw_scored": 1.9673854845585868,
       "guardrail_budget": 2.2624933072423747,
       "guardrail_breaches": [],
-      "guardrail_pass": true
+      "guardrail_pass": true,
+      "quality_mean": 0.877695804277821,
+      "quality": {
+        "lower": 0.7410435725687046,
+        "nfd": 0.8730136018730967,
+        "dblspace": 0.9816200041816199,
+        "detachpunct": 0.915106038487863,
+        "mean": 0.877695804277821
+      }
+    },
+    {
+      "name": "c33-uni-alph500-bf",
+      "note": "Unigram HF + alphabet 500 + byte fallback + notées x2",
+      "config": {
+        "name": "c33-uni-alph500-bf",
+        "model": "unigram",
+        "pre": "whitespace_split",
+        "min_freq": 0,
+        "alphabet": false,
+        "limit_alphabet": 500,
+        "byte_fallback": true,
+        "boost": {
+          "ha": 2,
+          "sw": 2,
+          "yo": 2,
+          "am": 2
+        },
+        "note": "Unigram HF + alphabet 500 + byte fallback + notées x2"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 290.1466181278229,
+      "score": 1.9674472015589584,
+      "fertility": {
+        "en": 1.9808633532649855,
+        "fr": 2.0551228875259233,
+        "ha": 1.7221189280664448,
+        "sw": 1.9361897124527436,
+        "yo": 1.8776557289115885,
+        "am": 2.333824436805057
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.9808633532649855,
+        "fr": 2.0551228875259233,
+        "ha": 1.7221189280664448,
+        "sw": 1.9361897124527436,
+        "yo": 1.8776557289115885,
+        "am": 2.333824436805057
+      },
+      "tokens": {
+        "en": 175245,
+        "fr": 186301,
+        "ha": 154679,
+        "sw": 135208,
+        "yo": 161024,
+        "am": 185336
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 23985,
+      "raw_scored": 1.9674472015589584,
+      "guardrail_budget": 2.262564281792802,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.9249781787711494,
+      "quality": {
+        "lower": 0.7517081108231909,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.9482046042614068,
+        "mean": 0.9249781787711494
+      }
     },
     {
       "name": "c8-scoredboost",
@@ -536,7 +1994,7 @@
         "note": "sur-echantillonnage des 4 langues notees (teste la limite du guardrail)"
       },
       "vocab_size": 10000,
-      "train_seconds": 24.436011791229248,
+      "train_seconds": 25.54749608039856,
       "score": 1.9799340002587336,
       "fertility": {
         "en": 1.9503328849653552,
@@ -583,7 +2041,15 @@
       "raw_scored": 1.9228259764574973,
       "guardrail_budget": 2.2112498729261216,
       "guardrail_breaches": [],
-      "guardrail_pass": true
+      "guardrail_pass": true,
+      "quality_mean": 0.9098373334855877,
+      "quality": {
+        "lower": 0.7622684569105924,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8770808770317584,
+        "mean": 0.9098373334855877
+      }
     },
     {
       "name": "c7-wssplit-mf10-alpha-amboost",
@@ -600,7 +2066,7 @@
         "note": "comme c4 + amharique sur-echantillonne x2"
       },
       "vocab_size": 10000,
-      "train_seconds": 19.20137357711792,
+      "train_seconds": 23.954866409301758,
       "score": 2.0115681314362943,
       "fertility": {
         "en": 1.9172139393459855,
@@ -647,7 +2113,92 @@
       "raw_scored": 1.9544601076350578,
       "guardrail_budget": 2.2476291237803165,
       "guardrail_breaches": [],
-      "guardrail_pass": true
+      "guardrail_pass": true,
+      "quality_mean": 0.9114350425160131,
+      "quality": {
+        "lower": 0.7627042092271382,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8830359608369144,
+        "mean": 0.9114350425160131
+      }
+    },
+    {
+      "name": "c36-sp-unigram-cov995",
+      "note": "SentencePiece unigram, character_coverage=0.995",
+      "config": {
+        "name": "c36-sp-unigram-cov995",
+        "model": "sp_unigram",
+        "pre": "metaspace",
+        "alphabet": false,
+        "min_freq": 0,
+        "byte_fallback": true,
+        "character_coverage": 0.995,
+        "boost": {
+          "ha": 2,
+          "sw": 2,
+          "yo": 2,
+          "am": 2
+        },
+        "note": "SentencePiece unigram, character_coverage=0.995"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 366.7883973121643,
+      "score": 2.0195714570863035,
+      "fertility": {
+        "en": 1.948445218098995,
+        "fr": 2.1110951771610114,
+        "ha": 1.6936616974136876,
+        "sw": 1.8564984534310918,
+        "yo": 1.9014902399776115,
+        "am": 2.6266354375228236
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.948445218098995,
+        "fr": 2.1110951771610114,
+        "ha": 1.6936616974136876,
+        "sw": 1.8564984534310918,
+        "yo": 1.9014902399776115,
+        "am": 2.6266354375228236
+      },
+      "tokens": {
+        "en": 172377,
+        "fr": 191375,
+        "ha": 152123,
+        "sw": 129643,
+        "yo": 163068,
+        "am": 208589
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 0,
+      "raw_scored": 2.0195714570863035,
+      "guardrail_budget": 2.322507175649249,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.881950845391479,
+      "quality": {
+        "lower": 0.7413630100320018,
+        "nfd": 0.871580936036942,
+        "dblspace": 0.9852612417477479,
+        "detachpunct": 0.9295981937492247,
+        "mean": 0.881950845391479
+      }
     },
     {
       "name": "c2-wssplit-mf2",
@@ -662,7 +2213,7 @@
         "note": "ponctuation collée au mot (WhitespaceSplit)"
       },
       "vocab_size": 10000,
-      "train_seconds": 17.397246837615967,
+      "train_seconds": 17.4057400226593,
       "score": 2.02293696540904,
       "fertility": {
         "en": 1.8648000994698708,
@@ -709,7 +2260,15 @@
       "raw_scored": 1.9658289416078036,
       "guardrail_budget": 2.260703282848974,
       "guardrail_breaches": [],
-      "guardrail_pass": true
+      "guardrail_pass": true,
+      "quality_mean": 0.9092320415880105,
+      "quality": {
+        "lower": 0.7584597107216081,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8784684556304341,
+        "mean": 0.9092320415880105
+      }
     },
     {
       "name": "c3-wssplit-mf5",
@@ -724,7 +2283,7 @@
         "note": "WhitespaceSplit + min_frequency=5"
       },
       "vocab_size": 10000,
-      "train_seconds": 16.748921394348145,
+      "train_seconds": 17.457172632217407,
       "score": 2.02293696540904,
       "fertility": {
         "en": 1.8648000994698708,
@@ -771,7 +2330,15 @@
       "raw_scored": 1.9658289416078036,
       "guardrail_budget": 2.260703282848974,
       "guardrail_breaches": [],
-      "guardrail_pass": true
+      "guardrail_pass": true,
+      "quality_mean": 0.9092320415880105,
+      "quality": {
+        "lower": 0.7584597107216081,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8784684556304341,
+        "mean": 0.9092320415880105
+      }
     },
     {
       "name": "c4-wssplit-mf10-alpha",
@@ -786,7 +2353,7 @@
         "note": "WhitespaceSplit + mf=10 + alphabet complet (supprime les UNK connus)"
       },
       "vocab_size": 10000,
-      "train_seconds": 16.97016406059265,
+      "train_seconds": 17.247421264648438,
       "score": 2.02293696540904,
       "fertility": {
         "en": 1.8648000994698708,
@@ -833,7 +2400,15 @@
       "raw_scored": 1.9658289416078036,
       "guardrail_budget": 2.260703282848974,
       "guardrail_breaches": [],
-      "guardrail_pass": true
+      "guardrail_pass": true,
+      "quality_mean": 0.9092320415880105,
+      "quality": {
+        "lower": 0.7584597107216081,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8784684556304341,
+        "mean": 0.9092320415880105
+      }
     },
     {
       "name": "c6-unigram-alpha",
@@ -848,7 +2423,7 @@
         "note": "modele Unigram + alphabet complet"
       },
       "vocab_size": 10000,
-      "train_seconds": 266.7792181968689,
+      "train_seconds": 266.5886986255646,
       "score": 2.034070939370922,
       "fertility": {
         "en": 1.8607760910601454,
@@ -895,7 +2470,15 @@
       "raw_scored": 1.9819763213431336,
       "guardrail_budget": 2.2792727695446033,
       "guardrail_breaches": [],
-      "guardrail_pass": true
+      "guardrail_pass": true,
+      "quality_mean": 0.9243485003133101,
+      "quality": {
+        "lower": 0.7499396059887844,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.9474543952644561,
+        "mean": 0.9243485003133101
+      }
     },
     {
       "name": "b1-baseline",
@@ -910,7 +2493,7 @@
         "note": "référence : BPE+NFC+Whitespace, mf=2 (doit redonner ~2.0600)"
       },
       "vocab_size": 10000,
-      "train_seconds": 21.108975648880005,
+      "train_seconds": 14.363838195800781,
       "score": 2.059977421976358,
       "fertility": {
         "en": 1.8892606449716849,
@@ -957,7 +2540,92 @@
       "raw_scored": 2.0028693981751213,
       "guardrail_budget": 2.3032998079013893,
       "guardrail_breaches": [],
-      "guardrail_pass": true
+      "guardrail_pass": true,
+      "quality_mean": 0.9386430574789968,
+      "quality": {
+        "lower": 0.7615748043097312,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.992997425606256,
+        "mean": 0.9386430574789968
+      }
+    },
+    {
+      "name": "c34-uni-punctiso-alph500-bf",
+      "note": "Unigram HF + ponctuation isolée + alphabet 500 + byte fallback",
+      "config": {
+        "name": "c34-uni-punctiso-alph500-bf",
+        "model": "unigram",
+        "pre": "whitespace_split_punct",
+        "min_freq": 0,
+        "alphabet": false,
+        "limit_alphabet": 500,
+        "byte_fallback": true,
+        "boost": {
+          "ha": 2,
+          "sw": 2,
+          "yo": 2,
+          "am": 2
+        },
+        "note": "Unigram HF + ponctuation isolée + alphabet 500 + byte fallback"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 162.50396370887756,
+      "score": 2.0738497950972086,
+      "fertility": {
+        "en": 2.0895907040884376,
+        "fr": 2.2143802673961965,
+        "ha": 1.8029926852893041,
+        "sw": 2.0788463741551153,
+        "yo": 2.001725786515544,
+        "am": 2.411834334428872
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 2.0895907040884376,
+        "fr": 2.2143802673961965,
+        "ha": 1.8029926852893041,
+        "sw": 2.0788463741551153,
+        "yo": 2.001725786515544,
+        "am": 2.411834334428872
+      },
+      "tokens": {
+        "en": 184864,
+        "fr": 200738,
+        "ha": 161943,
+        "sw": 145170,
+        "yo": 171664,
+        "am": 191531
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 23985,
+      "raw_scored": 2.0738497950972086,
+      "guardrail_budget": 2.3849272643617896,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.9406823978743886,
+      "quality": {
+        "lower": 0.7627295914975541,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 1.0,
+        "mean": 0.9406823978743886
+      }
     },
     {
       "name": "c5-bytelevel",
@@ -972,7 +2640,7 @@
         "note": "ByteLevel(use_regex) : round-trip sans perte, zero UNK"
       },
       "vocab_size": 10000,
-      "train_seconds": 27.9282443523407,
+      "train_seconds": 29.691203594207764,
       "score": 2.082581950032966,
       "fertility": {
         "en": 1.8889215431394049,
@@ -1019,7 +2687,92 @@
       "raw_scored": 2.082581950032966,
       "guardrail_budget": 2.3949692425379108,
       "guardrail_breaches": [],
-      "guardrail_pass": true
+      "guardrail_pass": true,
+      "quality_mean": 0.8927949888711617,
+      "quality": {
+        "lower": 0.75963817573467,
+        "nfd": 1.0,
+        "dblspace": 0.9701871448703642,
+        "detachpunct": 0.8413546348796127,
+        "mean": 0.8927949888711617
+      }
+    },
+    {
+      "name": "c35-sp-unigram-cov99",
+      "note": "SentencePiece unigram, character_coverage=0.99 (entre c26 et c15)",
+      "config": {
+        "name": "c35-sp-unigram-cov99",
+        "model": "sp_unigram",
+        "pre": "metaspace",
+        "alphabet": false,
+        "min_freq": 0,
+        "byte_fallback": true,
+        "character_coverage": 0.99,
+        "boost": {
+          "ha": 2,
+          "sw": 2,
+          "yo": 2,
+          "am": 2
+        },
+        "note": "SentencePiece unigram, character_coverage=0.99 (entre c26 et c15)"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 363.0018861293793,
+      "score": 2.1133156777932336,
+      "fertility": {
+        "en": 1.959737309113927,
+        "fr": 2.1322971363014607,
+        "ha": 1.702479430855387,
+        "sw": 1.8694294879138504,
+        "yo": 1.9383847571072086,
+        "am": 2.942969035296488
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.959737309113927,
+        "fr": 2.1322971363014607,
+        "ha": 1.702479430855387,
+        "sw": 1.8694294879138504,
+        "yo": 1.9383847571072086,
+        "am": 2.942969035296488
+      },
+      "tokens": {
+        "en": 173376,
+        "fr": 193297,
+        "ha": 152915,
+        "sw": 130546,
+        "yo": 166232,
+        "am": 233710
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 0,
+      "raw_scored": 2.1133156777932336,
+      "guardrail_budget": 2.4303130294622184,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.88479393322583,
+      "quality": {
+        "lower": 0.7401097036290913,
+        "nfd": 0.8735559107507401,
+        "dblspace": 0.9886464157665033,
+        "detachpunct": 0.9368637027569852,
+        "mean": 0.88479393322583
+      }
     },
     {
       "name": "c14-wordpiece",
@@ -1039,7 +2792,7 @@
         "note": "WordPiece (WhitespaceSplit, alphabet complet) — pas de byte fallback possible : l'option est ignorée pour WordPiece"
       },
       "vocab_size": 10000,
-      "train_seconds": 25.214728593826294,
+      "train_seconds": 26.665488243103027,
       "score": 2.2522999573912266,
       "fertility": {
         "en": 2.24841469893409,
@@ -1086,7 +2839,92 @@
       "raw_scored": 2.214587873665619,
       "guardrail_budget": 2.5467760547154614,
       "guardrail_breaches": [],
-      "guardrail_pass": true
+      "guardrail_pass": true,
+      "quality_mean": 0.9023324254837208,
+      "quality": {
+        "lower": 0.7613771260696259,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8479525758652575,
+        "mean": 0.9023324254837208
+      }
+    },
+    {
+      "name": "c26-sp-unigram-cov98",
+      "note": "SentencePiece unigram, character_coverage=0.98 (levier alphabet appliqué au unigram)",
+      "config": {
+        "name": "c26-sp-unigram-cov98",
+        "model": "sp_unigram",
+        "pre": "metaspace",
+        "alphabet": false,
+        "min_freq": 0,
+        "byte_fallback": true,
+        "character_coverage": 0.98,
+        "boost": {
+          "ha": 2,
+          "sw": 2,
+          "yo": 2,
+          "am": 2
+        },
+        "note": "SentencePiece unigram, character_coverage=0.98 (levier alphabet appliqué au unigram)"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 351.94889187812805,
+      "score": 2.310482288414219,
+      "fertility": {
+        "en": 1.9881879528422386,
+        "fr": 2.1700569209725105,
+        "ha": 1.7239782228704394,
+        "sw": 1.8746706381028755,
+        "yo": 2.005387252501224,
+        "am": 3.637893040182338
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.9881879528422386,
+        "fr": 2.1700569209725105,
+        "ha": 1.7239782228704394,
+        "sw": 1.8746706381028755,
+        "yo": 2.005387252501224,
+        "am": 3.637893040182338
+      },
+      "tokens": {
+        "en": 175893,
+        "fr": 196720,
+        "ha": 154846,
+        "sw": 130912,
+        "yo": 171978,
+        "am": 288896
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 0,
+      "raw_scored": 2.310482288414219,
+      "guardrail_budget": 2.6570546316763517,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.8862264843239204,
+      "quality": {
+        "lower": 0.7389347022475783,
+        "nfd": 0.8727228886117029,
+        "dblspace": 0.9907485605526373,
+        "detachpunct": 0.9424997858837632,
+        "mean": 0.8862264843239204
+      }
     },
     {
       "name": "c16-sp-bpe",
@@ -1108,7 +2946,7 @@
         "note": "SentencePiece BPE + byte fallback, converti en tokenizer.json"
       },
       "vocab_size": 10000,
-      "train_seconds": 11.965867280960083,
+      "train_seconds": 11.72776484489441,
       "score": 2.618558428956112,
       "fertility": {
         "en": 2.7519696164758276,
@@ -1155,33 +2993,132 @@
       "raw_scored": 2.618558428956112,
       "guardrail_budget": 3.011342193299529,
       "guardrail_breaches": [],
-      "guardrail_pass": true
+      "guardrail_pass": true,
+      "quality_mean": 0.8895766663444727,
+      "quality": {
+        "lower": 0.8429921979738119,
+        "nfd": 0.883481142957136,
+        "dblspace": 0.9766272613923594,
+        "detachpunct": 0.8552060630545837,
+        "mean": 0.8895766663444727
+      }
+    },
+    {
+      "name": "c19-alph100-bf",
+      "note": "alphabet limité à 100 caractères + byte fallback (extrême basse du levier)",
+      "config": {
+        "name": "c19-alph100-bf",
+        "model": "bpe",
+        "pre": "whitespace_split",
+        "min_freq": 5,
+        "alphabet": false,
+        "limit_alphabet": 100,
+        "byte_fallback": true,
+        "boost": {
+          "ha": 2,
+          "sw": 2,
+          "yo": 2,
+          "am": 2
+        },
+        "note": "alphabet limité à 100 caractères + byte fallback (extrême basse du levier)"
+      },
+      "vocab_size": 10000,
+      "train_seconds": 26.4297993183136,
+      "score": 2.818459487118443,
+      "fertility": {
+        "en": 1.8415942307474935,
+        "fr": 2.032177999382253,
+        "ha": 1.634431467729545,
+        "sw": 1.7492267155458816,
+        "yo": 2.0290235313323537,
+        "am": 5.861156233865992
+      },
+      "unk_rate": {
+        "en": 0.0,
+        "fr": 0.0,
+        "ha": 0.0,
+        "sw": 0.0,
+        "yo": 0.0,
+        "am": 0.0
+      },
+      "penalised": {
+        "en": 1.8415942307474935,
+        "fr": 2.032177999382253,
+        "ha": 1.634431467729545,
+        "sw": 1.7492267155458816,
+        "yo": 2.0290235313323537,
+        "am": 5.861156233865992
+      },
+      "tokens": {
+        "en": 162924,
+        "fr": 184221,
+        "ha": 146803,
+        "sw": 122152,
+        "yo": 174005,
+        "am": 465452
+      },
+      "words": {
+        "en": 88469,
+        "fr": 90652,
+        "ha": 89819,
+        "sw": 69832,
+        "yo": 85758,
+        "am": 79413
+      },
+      "unk_total": 0,
+      "lossy_rows": 23985,
+      "raw_scored": 2.818459487118443,
+      "guardrail_budget": 3.2412284101862094,
+      "guardrail_breaches": [],
+      "guardrail_pass": true,
+      "quality_mean": 0.9041270420114503,
+      "quality": {
+        "lower": 0.7443582893738379,
+        "nfd": 1.0,
+        "dblspace": 1.0,
+        "detachpunct": 0.8721498786719634,
+        "mean": 0.9041270420114503
+      }
     }
   ],
   "best": {
-    "name": "c12-alph500-bf",
-    "score": 1.8359052269643485,
+    "name": "c32-lower-alph1000-bf-b3",
+    "score": 1.7577300319444404,
     "config": {
-      "name": "c12-alph500-bf",
+      "name": "c32-lower-alph1000-bf-b3",
       "model": "bpe",
       "pre": "whitespace_split",
       "min_freq": 5,
+      "normalizer": "nfc_lower",
       "alphabet": false,
-      "limit_alphabet": 500,
+      "limit_alphabet": 1000,
       "byte_fallback": true,
       "boost": {
-        "ha": 2,
-        "sw": 2,
-        "yo": 2,
-        "am": 2
+        "ha": 3,
+        "sw": 3,
+        "yo": 3,
+        "am": 3
       },
-      "note": "alphabet limité à 500 caractères + byte fallback (limite basse du levier)"
+      "note": "c17 + lowercase (le lowercase fait-il rentrer x3 dans le guardrail ?)"
     },
     "guardrail_pass": true,
-    "model_path": "/content/models/optimized_c12-alph500-bf/tokenizer.json"
+    "model_path": "/content/models/optimized_c32-lower-alph1000-bf-b3/tokenizer.json",
+    "quality_mean": 0.9651731022636671,
+    "quality": {
+      "lower": 1.0,
+      "nfd": 1.0,
+      "dblspace": 1.0,
+      "detachpunct": 0.8606924090546688,
+      "mean": 0.9651731022636671
+    }
+  },
+  "best_raw_score": {
+    "name": "c30-lower-alph500-bf",
+    "score": 1.7575868305114262,
+    "quality_mean": 0.9641719011986398
   },
   "environment": {
     "tokenizers": "0.22.1",
-    "timestamp_utc": "2026-09-10T12:15:02Z"
+    "timestamp_utc": "2026-09-12T01:21:58Z"
   }
 }
